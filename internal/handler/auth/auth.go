@@ -10,6 +10,6 @@ func NewAuthHandler(app *gin.Engine) *AuthHandler {
 	return &AuthHandler{App: app}
 }
 
-func InitRoute() {
+func (authHandler *AuthHandler) InitRoute() {
 
 }

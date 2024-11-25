@@ -5,15 +5,19 @@ import (
 	"github.com/kaitokid2302/NewsAI/internal/handler/auth"
 )
 
-type Hanlder struct {
+type Handler struct {
 	app         *gin.Engine
 	authHandler *auth.AuthHandler
 }
 
-func NewHandler() *Hanlder {
+func NewHandler() *Handler {
 	app := gin.Default()
-	return &Hanlder{
+	return &Handler{
 		app:         app,
 		authHandler: auth.NewAuthHandler(app),
 	}
+}
+
+func (handler *Handler) Run() {
+	handler.authHandler.InitRoute()
 }
