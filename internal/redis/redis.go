@@ -10,9 +10,9 @@ import (
 
 func InitRedis() *redis.Client {
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     fmt.Sprintf("%s%d", config.Global.Redis.Host, config.Global.Redis.Port), // Redis server address
-		Password: "",                                                                      // no password set
-		DB:       0,                                                                       // default DB
+		Addr:     fmt.Sprintf("%s:%d", config.Global.Redis.Host, config.Global.Redis.Port), // Redis server address
+		Password: "",                                                                       // no password set
+		DB:       0,                                                                        // default DB
 	})
 	er := rdb.Ping(context.Background()).Err()
 	if er != nil {

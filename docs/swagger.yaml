@@ -1,0 +1,30 @@
+definitions:
+  auth.RegisterResponse:
+    type: object
+info:
+  contact: {}
+paths:
+  /register:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Register a new user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.RegisterResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/auth.RegisterResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/auth.RegisterResponse'
+      summary: Register a new user
+      tags:
+      - auth
+swagger: "2.0"

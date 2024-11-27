@@ -29,6 +29,15 @@ type RegisterResponse struct {
 	message    string
 }
 
+// @Summary Register a new user
+// @Description Register a new user
+// @Tags auth
+// @Accept multipart/form-data
+// @Produce json
+// @Success 200 {object} RegisterResponse
+// @Failure 400 {object} RegisterResponse
+// @Failure 500 {object} RegisterResponse
+// @Router /register [post]
 func (auth *AuthHandler) Register(c *gin.Context) {
 	var user database.User
 	var response RegisterResponse
