@@ -13,6 +13,6 @@ func main() {
 	database.InitDatabase()
 
 	email := service.NewEmailService()
-	er := email.SendEmail("dinhtruonglam2001ctn@gmail.com")
+	_, er := email.SendEmail("dinhtruonglam2001ctn@gmail.com")
 	fmt.Printf("er: %v\n", er)
 }

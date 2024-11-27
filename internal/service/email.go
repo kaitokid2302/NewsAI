@@ -14,7 +14,7 @@ import (
 )
 
 type EmailService interface {
-	SendEmail(to string) error
+	SendEmail(to string) (int, error)
 }
 
 type GoogleEmailServiceImpl struct {
@@ -25,14 +25,14 @@ func NewEmailService() EmailService {
 	return &GoogleEmailServiceImpl{}
 }
 
-func (googleEmail *GoogleEmailServiceImpl) SendEmail(to string) error {
+func (googleEmail *GoogleEmailServiceImpl) SendEmail(to string) (int, error) {
 
 	templatePath := filepath.Join("internal", "email", "otp.html")
 
 	// Đọc nội dung file template
 	templateContent, err := ioutil.ReadFile(templatePath)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
 	// internal/email/templateFile
@@ -44,7 +44,7 @@ func (googleEmail *GoogleEmailServiceImpl) SendEmail(to string) error {
 
 	tmpl, err := template.New("otp").Parse(string(templateContent))
 	if err != nil {
-		return err
+		return 0, err
 	}
 
 	data := struct {
@@ -55,14 +55,14 @@ func (googleEmail *GoogleEmailServiceImpl) SendEmail(to string) error {
 
 	var body bytes.Buffer
 	if err := tmpl.Execute(&body, data); err != nil {
-		return err
+		return 0, err
 	}
 	m.SetBody("text/html", body.String())
 
 	d := gomail.NewDialer("smtp.gmail.com", 587, config.Global.GoogleEmail.From, config.Global.GoogleEmail.AppPassword)
 	if err := d.DialAndSend(m); err != nil {
-		return err
+		return 0, err
 	}
 	// googleEmail.redis.SetEx()
-	return nil
+	return int(otpCode), nil
 }
