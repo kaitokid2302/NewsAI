@@ -11,5 +11,6 @@ func NewAuthHandler(app *gin.Engine) *AuthHandler {
 }
 
 func (authHandler *AuthHandler) InitRoute() {
-
+	app := authHandler.App
+	app.POST("/register")
 }

@@ -9,7 +9,7 @@ import (
 )
 
 func InitDatabase() *gorm.DB {
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d", Global.Host, Global.User, Global.Password, Global.Database.Database, Global.Port)
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d", Global.Database.Host, Global.Database.User, Global.Database.Password, Global.Database.Database, Global.Database.Port)
 	db, er := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if er != nil {

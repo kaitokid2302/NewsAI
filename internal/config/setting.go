@@ -7,6 +7,7 @@ var (
 type Config struct {
 	Database
 	GoogleEmail `mapstructure:"google_email"`
+	Redis
 }
 
 type GoogleEmail struct {
@@ -20,4 +21,9 @@ type Database struct {
 	User     string
 	Password string
 	Database string
+}
+
+type Redis struct {
+	Host string
+	Port int
 }

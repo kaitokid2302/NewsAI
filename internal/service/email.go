@@ -1,4 +1,4 @@
-package otp
+package service
 
 import (
 	"bytes"
@@ -9,21 +9,23 @@ import (
 	"path/filepath"
 
 	"github.com/kaitokid2302/NewsAI/internal/config"
+	"github.com/redis/go-redis/v9"
 	"gopkg.in/gomail.v2"
 )
 
-type Email interface {
+type EmailService interface {
 	SendEmail(to string) error
 }
 
-type GoogleEmail struct {
+type GoogleEmailServiceImpl struct {
+	redis *redis.Client
 }
 
-func NewEmail() Email {
-	return &GoogleEmail{}
+func NewEmailService() EmailService {
+	return &GoogleEmailServiceImpl{}
 }
 
-func (googleEmail *GoogleEmail) SendEmail(to string) error {
+func (googleEmail *GoogleEmailServiceImpl) SendEmail(to string) error {
 
 	templatePath := filepath.Join("internal", "email", "otp.html")
 
