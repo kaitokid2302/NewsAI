@@ -1,2 +1,2 @@
 .vscode
-internal/config/local.yaml
+./internal/config/local.yaml
