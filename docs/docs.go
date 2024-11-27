@@ -19,7 +19,8 @@ const docTemplate = `{
             "post": {
                 "description": "Register a new user",
                 "consumes": [
-                    "multipart/form-data"
+                    "multipart/form-data",
+                    "application/json"
                 ],
                 "produces": [
                     "application/json"
@@ -28,6 +29,29 @@ const docTemplate = `{
                     "auth"
                 ],
                 "summary": "Register a new user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Username",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Email",
+                        "name": "email",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Password",
+                        "name": "password",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -53,7 +77,32 @@ const docTemplate = `{
     },
     "definitions": {
         "auth.RegisterResponse": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/auth.RegisterResponseData"
+                },
+                "er": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "statusCode": {
+                    "type": "integer"
+                }
+            }
+        },
+        "auth.RegisterResponseData": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
         }
     }
 }`

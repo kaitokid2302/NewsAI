@@ -23,17 +23,26 @@ func NewAuthHandler(emailService service.EmailService, redisClient *redis.Client
 }
 
 type RegisterResponse struct {
-	statusCode int
-	data       database.User
-	er         string
-	message    string
+	StatusCode int                  `json:"statusCode"`
+	Data       RegisterResponseData `json:"data"`
+	Er         string               `json:"er"`
+	Message    string               `json:"message"`
+}
+
+type RegisterResponseData struct {
+	Email string `json:"email"`
+	Name  string `json:"name"`
 }
 
 // @Summary Register a new user
 // @Description Register a new user
 // @Tags auth
 // @Accept multipart/form-data
+// @Accept json
 // @Produce json
+// @Param   name     formData  string  true  "Username"
+// @Param   email    formData  string  true  "Email"
+// @Param   password formData  string  true  "Password"
 // @Success 200 {object} RegisterResponse
 // @Failure 400 {object} RegisterResponse
 // @Failure 500 {object} RegisterResponse
@@ -43,33 +52,34 @@ func (auth *AuthHandler) Register(c *gin.Context) {
 	var response RegisterResponse
 	if er := c.ShouldBind(&user); er != nil {
 		response = RegisterResponse{
-			statusCode: http.StatusBadRequest,
-			er:         er.Error(),
-			data:       database.User{},
-			message:    "Invalid request",
+			StatusCode: http.StatusBadRequest,
+			Er:         er.Error(),
+			Message:    "Invalid request",
 		}
-		c.JSON(response.statusCode, response)
+		c.JSON(response.StatusCode, response)
 		return
 	}
 
 	otpCode, er := auth.emailService.SendEmail(user.Email)
 	if er != nil {
 		response = RegisterResponse{
-			statusCode: http.StatusInternalServerError,
-			er:         er.Error(),
-			data:       database.User{},
-			message:    "Internal server error",
+			StatusCode: http.StatusInternalServerError,
+			Er:         er.Error(),
+			Message:    "Internal server error",
 		}
-		c.JSON(response.statusCode, response)
+		c.JSON(response.StatusCode, response)
 		return
 	}
 	response = RegisterResponse{
-		statusCode: http.StatusOK,
-		message:    "User registered successfully. An OTP has been sent to your email and is valid for 5 minutes.",
-		data:       user,
-		er:         "",
+		Data: RegisterResponseData{
+			Email: user.Email,
+			Name:  user.Name,
+		},
+		StatusCode: http.StatusOK,
+		Message:    "User registered successfully. An OTP has been sent to your email and is valid for 5 minutes.",
+		Er:         "",
 	}
 
 	auth.redisClient.SetEx(c, user.Email, otpCode, time.Minute*5)
-	c.JSON(response.statusCode, response)
+	c.JSON(response.StatusCode, response)
 }

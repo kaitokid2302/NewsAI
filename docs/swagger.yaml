@@ -1,5 +1,21 @@
 definitions:
   auth.RegisterResponse:
+    properties:
+      data:
+        $ref: '#/definitions/auth.RegisterResponseData'
+      er:
+        type: string
+      message:
+        type: string
+      statusCode:
+        type: integer
+    type: object
+  auth.RegisterResponseData:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
     type: object
 info:
   contact: {}
@@ -8,7 +24,24 @@ paths:
     post:
       consumes:
       - multipart/form-data
+      - application/json
       description: Register a new user
+      parameters:
+      - description: Username
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: Email
+        in: formData
+        name: email
+        required: true
+        type: string
+      - description: Password
+        in: formData
+        name: password
+        required: true
+        type: string
       produces:
       - application/json
       responses:

@@ -3,6 +3,7 @@ package service
 import (
 	"bytes"
 	_ "embed"
+	"fmt"
 	"html/template"
 	"io/ioutil"
 	"math/rand/v2"
@@ -21,8 +22,8 @@ type GoogleEmailServiceImpl struct {
 	redis *redis.Client
 }
 
-func NewEmailService() EmailService {
-	return &GoogleEmailServiceImpl{}
+func NewEmailService(redis *redis.Client) EmailService {
+	return &GoogleEmailServiceImpl{redis}
 }
 
 func (googleEmail *GoogleEmailServiceImpl) SendEmail(to string) (int, error) {
@@ -32,6 +33,7 @@ func (googleEmail *GoogleEmailServiceImpl) SendEmail(to string) (int, error) {
 	// Đọc nội dung file template
 	templateContent, err := ioutil.ReadFile(templatePath)
 	if err != nil {
+		fmt.Print("before before before here")
 		return 0, err
 	}
 
@@ -44,6 +46,7 @@ func (googleEmail *GoogleEmailServiceImpl) SendEmail(to string) (int, error) {
 
 	tmpl, err := template.New("otp").Parse(string(templateContent))
 	if err != nil {
+		fmt.Print("before before here")
 		return 0, err
 	}
 
@@ -55,12 +58,14 @@ func (googleEmail *GoogleEmailServiceImpl) SendEmail(to string) (int, error) {
 
 	var body bytes.Buffer
 	if err := tmpl.Execute(&body, data); err != nil {
+		fmt.Print("before here")
 		return 0, err
 	}
 	m.SetBody("text/html", body.String())
 
 	d := gomail.NewDialer("smtp.gmail.com", 587, config.Global.GoogleEmail.From, config.Global.GoogleEmail.AppPassword)
 	if err := d.DialAndSend(m); err != nil {
+		fmt.Print("here")
 		return 0, err
 	}
 	// googleEmail.redis.SetEx()

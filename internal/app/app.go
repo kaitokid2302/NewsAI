@@ -16,8 +16,8 @@ func Run() {
 	url := ginSwagger.URL("http://localhost:8080/swagger/doc.json")
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler, url))
 
-	emailService := service.NewEmailService()
 	redisClient := redis.InitRedis()
+	emailService := service.NewEmailService(redisClient)
 	authHandler := auth.NewAuthHandler(emailService, redisClient)
 
 	authHandler.InitRoute(r.Group("/"))

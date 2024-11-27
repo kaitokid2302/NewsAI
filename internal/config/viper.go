@@ -10,6 +10,8 @@ func ViperInit() {
 	viper.SetConfigName("local")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath("./internal/config")
+	viper.AddConfigPath("../internal/config")
+	viper.AddConfigPath("../../internal/config")
 
 	err := viper.ReadInConfig()
 	if err != nil {
