@@ -63,5 +63,6 @@ func (googleEmail *GoogleEmailServiceImpl) SendEmail(to string) error {
 	if err := d.DialAndSend(m); err != nil {
 		return err
 	}
+	// googleEmail.redis.SetEx()
 	return nil
 }
