@@ -79,11 +79,11 @@ const docTemplate = `{
         "auth.RegisterResponse": {
             "type": "object",
             "properties": {
-                "data": {
-                    "$ref": "#/definitions/auth.RegisterResponseData"
-                },
                 "er": {
                     "type": "string"
+                },
+                "ldata": {
+                    "$ref": "#/definitions/auth.RegisterResponseData"
                 },
                 "message": {
                     "type": "string"

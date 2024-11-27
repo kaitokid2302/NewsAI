@@ -23,14 +23,14 @@ func NewAuthHandler(emailService service.EmailService, redisClient *redis.Client
 }
 
 type RegisterResponse struct {
-	StatusCode int                  `json:"statusCode"`
-	Data       RegisterResponseData `json:"data"`
-	Er         string               `json:"er"`
-	Message    string               `json:"message"`
+	StatusCode int
+	Data       RegisterResponseData
+	Er         string
+	Message    string
 }
 
 type RegisterResponseData struct {
-	Email string `json:"email"`
+	Email string
 	Name  string `json:"name"`
 }
 
