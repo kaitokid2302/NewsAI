@@ -6,6 +6,12 @@ var (
 
 type Config struct {
 	Database
+	GoogleEmail `mapstructure:"google_email"`
+}
+
+type GoogleEmail struct {
+	AppPassword string `mapstructure:"app_password"`
+	From        string `mapstructure:"from"`
 }
 
 type Database struct {
