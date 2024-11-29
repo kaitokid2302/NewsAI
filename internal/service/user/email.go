@@ -57,3 +57,18 @@ func (s *UserServiceImpl) SendEmail(to string) (int, error) {
 
 	return int(otpCode), nil
 }
+
+func (s *UserServiceImpl) ResendOTP(email string) (int, error) {
+	if s.userRepo.ExistUser(email) {
+		return 0, fmt.Errorf("user already exists")
+	}
+	user, er := s.GetTempUser(email)
+	if er != nil || user.Email == "" {
+		return 0, fmt.Errorf("user not found, register again")
+	}
+	otpCode, er := s.SendEmail(email)
+	if er != nil {
+		return 0, er
+	}
+	return otpCode, nil
+}

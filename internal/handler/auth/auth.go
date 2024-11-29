@@ -66,6 +66,7 @@ func (auth *AuthHandler) Register(c *gin.Context) {
 // @Description OTP authentication
 // @Tags auth
 // @Accept json
+// @Accept multipart/form-data
 // @Produce json
 // @Param request body OTPVerificationRequest true "OTP Verification Request"
 // @Success 200 {object} RegisterResponse
@@ -105,6 +106,53 @@ func (auth *AuthHandler) VerifyOTP(c *gin.Context) {
 		Data: RegisterResponseData{
 			Email: input.Email,
 			Name:  name,
+		},
+	}
+	c.JSON(output.StatusCode, output)
+}
+
+// @Summary Resend OTP
+// @Description Resend OTP
+// @Tags auth
+// @Accept json
+// @Accept multipart/form-data
+// @Produce json
+// @Param email formData string true "Email"
+// @Success 200 {object} RegisterResponse
+// @Failure 400 {object} RegisterResponse
+// @Failure 500 {object} RegisterResponse
+// @Router /auth/verify/resend [post]
+func (auth *AuthHandler) ResendOTP(c *gin.Context) {
+	var email struct {
+		Email string `json:"email" binding:"required,email" form:"email"`
+	}
+	var output RegisterResponse
+	if er := c.ShouldBind(&email); er != nil {
+		output = RegisterResponse{
+			StatusCode: http.StatusBadRequest,
+			Er:         er.Error(),
+			Message:    "Invalid request",
+		}
+		c.JSON(output.StatusCode, output)
+		return
+	}
+
+	_, er := auth.userService.ResendOTP(email.Email)
+	if er != nil {
+		output = RegisterResponse{
+			StatusCode: http.StatusInternalServerError,
+			Er:         er.Error(),
+			Message:    "Can not resend OTP",
+		}
+		c.JSON(output.StatusCode, output)
+		return
+	}
+	output = RegisterResponse{
+		StatusCode: http.StatusOK,
+		Message:    "OTP has been sent to your email. The code is only valid for 5 minutes.",
+		Data: RegisterResponseData{
+			Email: email.Email,
+			Name:  "",
 		},
 	}
 	c.JSON(output.StatusCode, output)

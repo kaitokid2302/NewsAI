@@ -74,6 +74,7 @@ paths:
     post:
       consumes:
       - application/json
+      - multipart/form-data
       description: OTP authentication
       parameters:
       - description: OTP Verification Request
@@ -98,6 +99,36 @@ paths:
           schema:
             $ref: '#/definitions/auth.RegisterResponse'
       summary: OTP authentication
+      tags:
+      - auth
+  /auth/verify/resend:
+    post:
+      consumes:
+      - application/json
+      - multipart/form-data
+      description: Resend OTP
+      parameters:
+      - description: Email
+        in: formData
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.RegisterResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/auth.RegisterResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/auth.RegisterResponse'
+      summary: Resend OTP
       tags:
       - auth
 swagger: "2.0"

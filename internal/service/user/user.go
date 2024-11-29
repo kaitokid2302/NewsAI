@@ -14,6 +14,7 @@ type UserService interface {
 	SendEmail(to string) (int, error)
 	SetOTPCode(email string, code int) error
 	GetOTPCode(email string) (int, error)
+	ResendOTP(email string) (int, error)
 }
 
 type UserServiceImpl struct {
