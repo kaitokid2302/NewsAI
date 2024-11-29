@@ -1,8 +1,7 @@
-package service
+package userservice
 
 import (
 	"bytes"
-	_ "embed"
 	"fmt"
 	"html/template"
 	"io/ioutil"
@@ -10,24 +9,10 @@ import (
 	"path/filepath"
 
 	"github.com/kaitokid2302/NewsAI/internal/config"
-	"github.com/redis/go-redis/v9"
 	"gopkg.in/gomail.v2"
 )
 
-type EmailService interface {
-	SendEmail(to string) (int, error)
-}
-
-type GoogleEmailServiceImpl struct {
-	redis *redis.Client
-}
-
-func NewEmailService(redis *redis.Client) EmailService {
-	return &GoogleEmailServiceImpl{redis}
-}
-
-func (googleEmail *GoogleEmailServiceImpl) SendEmail(to string) (int, error) {
-
+func (s *UserServiceImpl) SendEmail(to string) (int, error) {
 	templatePath := filepath.Join("internal", "email", "otp.html")
 
 	// Đọc nội dung file template
@@ -68,6 +53,7 @@ func (googleEmail *GoogleEmailServiceImpl) SendEmail(to string) (int, error) {
 		fmt.Print("here")
 		return 0, err
 	}
-	// googleEmail.redis.SetEx()
+	s.SetOTPCode(to, int(otpCode))
+
 	return int(otpCode), nil
 }
