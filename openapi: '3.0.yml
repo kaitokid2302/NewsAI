@@ -1,0 +1,159 @@
+openapi: '3.0.3'
+info:
+  title: NewsAI
+  version: '1.0'
+  contact:
+    email: truonglamthientai321@gmail.com
+  description: "This is a big project for thesis"
+servers:
+  - url: http://localhost:8080
+
+tags:
+  - name: auth
+    description: "Authentication, login, register, send otp"
+paths:
+  /auth/register:
+    post:
+      tags:
+        - auth
+      responses:
+        '200':
+          description: "Sent OTP to email address"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResponse'
+        '400':
+          description: 'Can not register'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResponse'
+      requestBody:
+        description: "Accept user model, containing name email password"
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user'
+          # multipart/form-data:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/user'
+  /auth/verify:
+    post:
+      tags:
+        - auth
+      description: 'Verify otp code'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResponse'
+        '400':
+          description: 'Can not verify'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResponse'
+      requestBody:
+        description: "Accept otp code and email"
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OTPrequest'
+          # multipart/form-data:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OTPrequest'
+  /auth/verify/resend:
+    post:
+      tags:
+        - auth
+      description: 'Resend otp code'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResponse'
+        '400':
+          description: 'Can not resend'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResponse'
+      requestBody:
+        description: "Accept email"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: mra2322001@gmail.com
+              required:
+                - email
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: mra2322001@gmail.com
+        
+components:
+  schemas:
+    user:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Dinh Bo Linh
+        email:
+          type: string
+          example: mra2322001@gmail.com
+        password:
+          type: string
+          example: 2322001
+      required:
+        - name
+        - email
+        - password
+    OTPrequest:
+      type: object
+      required:
+        - otp
+        - email
+      properties:
+        otp:
+          type: integer
+          example: 165322
+        email:
+         type: string
+         example: mra2322001@gmail.com
+    RegisterResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 200
+        message:
+          type: string
+          example: "OTP has been sent to your email. The code is only valid for 5 minutes."
+        er:
+          type: string
+          example: "Can not register"
+        data:
+         type: object
+         properties:
+          email:
+            type: string
+            example: "mra232001@gmail.com"
+          name:
+            type: string
+            example: "Dinh truong lam"
+          

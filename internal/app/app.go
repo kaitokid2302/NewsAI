@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/kaitokid2302/NewsAI/internal/database"
 	"github.com/kaitokid2302/NewsAI/internal/handler/auth"
@@ -15,6 +16,8 @@ import (
 
 func Run() {
 	r := gin.Default()
+	// cors all
+	r.Use(cors.Default())
 	url := ginSwagger.URL("http://localhost:8080/swagger/doc.json")
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler, url))
 
