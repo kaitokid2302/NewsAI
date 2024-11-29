@@ -20,7 +20,7 @@ definitions:
 info:
   contact: {}
 paths:
-  /register:
+  /auth/register:
     post:
       consumes:
       - multipart/form-data
@@ -58,6 +58,42 @@ paths:
           schema:
             $ref: '#/definitions/auth.RegisterResponse'
       summary: Register a new user
+      tags:
+      - auth
+  /auth/verify:
+    post:
+      consumes:
+      - application/json
+      description: OTP authentication
+      parameters:
+      - description: Email
+        in: body
+        name: email
+        required: true
+        schema:
+          type: string
+      - description: OTP
+        in: body
+        name: otp
+        required: true
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.RegisterResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/auth.RegisterResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/auth.RegisterResponse'
+      summary: OTP authentication
       tags:
       - auth
 swagger: "2.0"

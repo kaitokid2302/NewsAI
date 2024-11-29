@@ -28,7 +28,7 @@ func NewAuthHandler(userService userservice.UserService) *AuthHandler {
 // @Success 200 {object} RegisterResponse
 // @Failure 400 {object} RegisterResponse
 // @Failure 500 {object} RegisterResponse
-// @Router /register [post]
+// @Router /auth/register [post]
 func (auth *AuthHandler) Register(c *gin.Context) {
 	var user database.User
 	var response RegisterResponse
@@ -71,7 +71,7 @@ func (auth *AuthHandler) Register(c *gin.Context) {
 // @Success 200 {object} RegisterResponse
 // @Failure 400 {object} RegisterResponse
 // @Failure 500 {object} RegisterResponse
-// @Router /verify [post]
+// @Router /auth/verify [post]
 func (auth *AuthHandler) OTPauthentication(c *gin.Context) {
 	// email
 	// otp

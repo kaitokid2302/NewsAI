@@ -26,8 +26,8 @@ func NewUserService(repo repository.UserRepo, redisClient *redis.Client) UserSer
 }
 
 func (s *UserServiceImpl) Register(user *database.User) error {
-	find, _ := s.userRepo.GetUserByEmail(user.Email)
-	if find != nil {
+	exist := s.userRepo.ExistUser(user.Email)
+	if exist {
 		return errors.New("user already exists")
 	}
 	code, er := s.SendEmail(user.Email)

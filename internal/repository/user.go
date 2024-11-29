@@ -8,6 +8,7 @@ import (
 type UserRepo interface {
 	SaveUserDB(user *database.User) error
 	GetUserByEmail(email string) (*database.User, error)
+	ExistUser(email string) bool
 }
 
 type UserRepoImpl struct {
@@ -30,4 +31,10 @@ func (repo *UserRepoImpl) GetUserByEmail(email string) (*database.User, error) {
 		return nil, err
 	}
 	return &user, nil
+}
+
+func (repo *UserRepoImpl) ExistUser(email string) bool {
+	db := repo.db
+	count := db.Where("email = ?", email).Find(&database.User{}).RowsAffected
+	return count > 0
 }
