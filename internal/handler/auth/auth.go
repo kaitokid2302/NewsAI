@@ -59,6 +59,7 @@ func (auth *AuthHandler) Register(c *gin.Context) {
 		},
 		Message: "OTP has been sent to your email. The code is only valid for 5 minutes.",
 	}
+	c.JSON(response.StatusCode, response)
 }
 
 // @Summary OTP authentication
@@ -66,20 +67,16 @@ func (auth *AuthHandler) Register(c *gin.Context) {
 // @Tags auth
 // @Accept json
 // @Produce json
-// @Param   email body string true "Email"
-// @Param   otp   body int    true "OTP"
+// @Param request body OTPVerificationRequest true "OTP Verification Request"
 // @Success 200 {object} RegisterResponse
 // @Failure 400 {object} RegisterResponse
 // @Failure 500 {object} RegisterResponse
 // @Router /auth/verify [post]
-func (auth *AuthHandler) OTPauthentication(c *gin.Context) {
+func (auth *AuthHandler) VerifyOTP(c *gin.Context) {
 	// email
 	// otp
 
-	var input struct {
-		Email string `validate:"required,email"`
-		OTP   int    `validate:"required"`
-	}
+	var input OTPVerificationRequest
 
 	var output RegisterResponse
 

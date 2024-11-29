@@ -1,4 +1,14 @@
 definitions:
+  auth.OTPVerificationRequest:
+    properties:
+      email:
+        type: string
+      otp:
+        type: integer
+    required:
+    - email
+    - otp
+    type: object
   auth.RegisterResponse:
     properties:
       data:
@@ -66,18 +76,12 @@ paths:
       - application/json
       description: OTP authentication
       parameters:
-      - description: Email
+      - description: OTP Verification Request
         in: body
-        name: email
+        name: request
         required: true
         schema:
-          type: string
-      - description: OTP
-        in: body
-        name: otp
-        required: true
-        schema:
-          type: integer
+          $ref: '#/definitions/auth.OTPVerificationRequest'
       produces:
       - application/json
       responses:

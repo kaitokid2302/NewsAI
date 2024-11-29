@@ -89,21 +89,12 @@ const docTemplate = `{
                 "summary": "OTP authentication",
                 "parameters": [
                     {
-                        "description": "Email",
-                        "name": "email",
+                        "description": "OTP Verification Request",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "OTP",
-                        "name": "otp",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
+                            "$ref": "#/definitions/auth.OTPVerificationRequest"
                         }
                     }
                 ],
@@ -131,6 +122,21 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "auth.OTPVerificationRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "otp"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "otp": {
+                    "type": "integer"
+                }
+            }
+        },
         "auth.RegisterResponse": {
             "type": "object",
             "properties": {
