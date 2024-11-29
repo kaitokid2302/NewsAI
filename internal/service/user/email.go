@@ -48,9 +48,9 @@ func (s *UserServiceImpl) SendEmail(to string) (int, error) {
 	}
 	m.SetBody("text/html", body.String())
 
-	d := gomail.NewDialer("smtp.gmail.com", 587, config.Global.GoogleEmail.From, config.Global.GoogleEmail.AppPassword)
+	d := gomail.NewDialer("smtp.gmail.com", 465, config.Global.GoogleEmail.From, config.Global.GoogleEmail.AppPassword)
 	if err := d.DialAndSend(m); err != nil {
-		fmt.Print("here")
+		fmt.Println("here")
 		return 0, err
 	}
 	s.SetOTPCode(to, int(otpCode))
