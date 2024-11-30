@@ -6,14 +6,19 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/kaitokid2302/NewsAI/internal/database"
 	userservice "github.com/kaitokid2302/NewsAI/internal/service/auth"
+	"github.com/kaitokid2302/NewsAI/internal/service/jwt"
 )
 
 type AuthHandler struct {
 	userService userservice.UserService
+	jwtService  jwt.JWTservice
 }
 
-func NewAuthHandler(userService userservice.UserService) *AuthHandler {
-	return &AuthHandler{userService: userService}
+func NewAuthHandler(userService userservice.UserService, jwtService jwt.JWTservice) *AuthHandler {
+	return &AuthHandler{
+		userService: userService,
+		jwtService:  jwtService,
+	}
 }
 
 // @Summary Register a new user
@@ -31,9 +36,9 @@ func NewAuthHandler(userService userservice.UserService) *AuthHandler {
 // @Router /auth/register [post]
 func (auth *AuthHandler) Register(c *gin.Context) {
 	var user database.User
-	var response RegisterResponse
+	var response Response
 	if er := c.ShouldBind(&user); er != nil {
-		response = RegisterResponse{
+		response = Response{
 			StatusCode: http.StatusBadRequest,
 			Er:         er.Error(),
 			Message:    "Invalid request",
@@ -43,7 +48,7 @@ func (auth *AuthHandler) Register(c *gin.Context) {
 	}
 	er := auth.userService.Register(&user)
 	if er != nil {
-		response = RegisterResponse{
+		response = Response{
 			StatusCode: http.StatusInternalServerError,
 			Er:         er.Error(),
 			Message:    "Can not register user",
@@ -51,9 +56,9 @@ func (auth *AuthHandler) Register(c *gin.Context) {
 		c.JSON(response.StatusCode, response)
 		return
 	}
-	response = RegisterResponse{
+	response = Response{
 		StatusCode: http.StatusOK,
-		Data: RegisterResponseData{
+		Data: ResponseData{
 			Email: user.Email,
 			Name:  user.Name,
 		},
@@ -79,10 +84,10 @@ func (auth *AuthHandler) VerifyOTP(c *gin.Context) {
 
 	var input OTPVerificationRequest
 
-	var output RegisterResponse
+	var output Response
 
 	if er := c.ShouldBind(&input); er != nil {
-		output = RegisterResponse{
+		output = Response{
 			StatusCode: http.StatusBadRequest,
 			Er:         er.Error(),
 			Message:    "Invalid request",
@@ -92,7 +97,7 @@ func (auth *AuthHandler) VerifyOTP(c *gin.Context) {
 	}
 	name, er := auth.userService.VerificationOTP(input.Email, input.OTP)
 	if er != nil {
-		output = RegisterResponse{
+		output = Response{
 			StatusCode: http.StatusInternalServerError,
 			Er:         er.Error(),
 			Message:    "Can not verify OTP",
@@ -100,10 +105,10 @@ func (auth *AuthHandler) VerifyOTP(c *gin.Context) {
 		c.JSON(output.StatusCode, output)
 		return
 	}
-	output = RegisterResponse{
+	output = Response{
 		StatusCode: http.StatusOK,
 		Message:    "User has been registered successfully",
-		Data: RegisterResponseData{
+		Data: ResponseData{
 			Email: input.Email,
 			Name:  name,
 		},
@@ -126,9 +131,9 @@ func (auth *AuthHandler) ResendOTP(c *gin.Context) {
 	var email struct {
 		Email string `json:"email" binding:"required,email" form:"email"`
 	}
-	var output RegisterResponse
+	var output Response
 	if er := c.ShouldBind(&email); er != nil {
-		output = RegisterResponse{
+		output = Response{
 			StatusCode: http.StatusBadRequest,
 			Er:         er.Error(),
 			Message:    "Invalid request",
@@ -139,7 +144,7 @@ func (auth *AuthHandler) ResendOTP(c *gin.Context) {
 
 	_, er := auth.userService.ResendOTP(email.Email)
 	if er != nil {
-		output = RegisterResponse{
+		output = Response{
 			StatusCode: http.StatusInternalServerError,
 			Er:         er.Error(),
 			Message:    "Can not resend OTP",
@@ -147,10 +152,10 @@ func (auth *AuthHandler) ResendOTP(c *gin.Context) {
 		c.JSON(output.StatusCode, output)
 		return
 	}
-	output = RegisterResponse{
+	output = Response{
 		StatusCode: http.StatusOK,
 		Message:    "OTP has been sent to your email. The code is only valid for 5 minutes.",
-		Data: RegisterResponseData{
+		Data: ResponseData{
 			Email: email.Email,
 			Name:  "",
 		},

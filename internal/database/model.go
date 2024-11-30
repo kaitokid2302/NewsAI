@@ -7,6 +7,6 @@ type User struct {
 	Name string `form:"name" binding:"required"`
 	// email validate
 	Email    string `gorm:"unique" binding:"required,email" form:"email"`
-	Password string `validate:"binding" form:"password"`
+	Password string `validate:"binding" form:"password" json:"password,omitempty"`
 	Avatar   string `form:"avatar"`
 }

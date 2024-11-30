@@ -9,6 +9,7 @@ type UserRepo interface {
 	SaveUserDB(user *database.User) error
 	GetUserByEmail(email string) (*database.User, error)
 	ExistUser(email string) bool
+	Login(email, password string) (*database.User, error)
 }
 
 type UserRepoImpl struct {
@@ -17,6 +18,17 @@ type UserRepoImpl struct {
 
 func NewUserRepo(db *gorm.DB) UserRepo {
 	return &UserRepoImpl{db: db}
+}
+
+func (repo *UserRepoImpl) Login(email, password string) (*database.User, error) {
+	var user database.User
+	repo.db.Where("email = ? AND password = ?", email, password).First(&user)
+	if user.ID == 0 {
+		return nil, gorm.ErrRecordNotFound
+	}
+	user.Password = ""
+	return &user, gorm.ErrRecordNotFound
+
 }
 
 func (repo *UserRepoImpl) SaveUserDB(user *database.User) error {

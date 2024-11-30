@@ -15,6 +15,7 @@ type UserService interface {
 	SetOTPCode(email string, code int) error
 	GetOTPCode(email string) (int, error)
 	ResendOTP(email string) (int, error)
+	Login(email, password string) (*database.User, error)
 }
 
 type UserServiceImpl struct {
@@ -24,6 +25,15 @@ type UserServiceImpl struct {
 
 func NewUserService(repo repository.UserRepo, redisClient *redis.Client) UserService {
 	return &UserServiceImpl{userRepo: repo, redisClient: redisClient}
+}
+
+func (s *UserServiceImpl) Login(email, password string) (*database.User, error) {
+	user, er := s.userRepo.Login(email, password)
+	if er != nil {
+		return nil, er
+	}
+	user.Password = ""
+	return user, nil
 }
 
 func (s *UserServiceImpl) Register(user *database.User) error {

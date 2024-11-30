@@ -8,6 +8,7 @@ import (
 	"github.com/kaitokid2302/NewsAI/internal/redis"
 	"github.com/kaitokid2302/NewsAI/internal/repository"
 	userservice "github.com/kaitokid2302/NewsAI/internal/service/auth"
+	"github.com/kaitokid2302/NewsAI/internal/service/jwt"
 
 	swaggerfiles "github.com/swaggo/files"
 
@@ -23,9 +24,11 @@ func Run() {
 
 	redisClient := redis.InitRedis()
 	db := database.InitDatabase()
+	jwtService := jwt.NewJWTService()
 	userRepo := repository.NewUserRepo(db)
 	userService := userservice.NewUserService(userRepo, redisClient)
-	authHandler := auth.NewAuthHandler(userService)
+
+	authHandler := auth.NewAuthHandler(userService, jwtService)
 
 	authHandler.InitRoute(r.Group("/auth"))
 

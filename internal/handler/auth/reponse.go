@@ -1,13 +1,14 @@
 package auth
 
-type RegisterResponse struct {
+type Response struct {
 	StatusCode int
-	Data       RegisterResponseData
+	Data       ResponseData `json:"data,omitempty"`
 	Er         string
 	Message    string
+	JwtToken   string `json:"jwt,omitempty"`
 }
 
-type RegisterResponseData struct {
-	Email string
-	Name  string `json:"name"`
+type ResponseData struct {
+	Email string `json:"email,omitempty"`
+	Name  string `json:"name,omitempty"`
 }
