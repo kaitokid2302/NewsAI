@@ -8,11 +8,16 @@ type Config struct {
 	Database
 	GoogleEmail `mapstructure:"google_email"`
 	Redis
+	JWT
 }
 
 type GoogleEmail struct {
 	AppPassword string `mapstructure:"app_password"`
 	From        string `mapstructure:"from"`
+}
+
+type JWT struct {
+	Key string
 }
 
 type Database struct {
