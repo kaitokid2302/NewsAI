@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/kaitokid2302/NewsAI/internal/database"
-	userservice "github.com/kaitokid2302/NewsAI/internal/service/user"
+	userservice "github.com/kaitokid2302/NewsAI/internal/service/auth"
 )
 
 type AuthHandler struct {

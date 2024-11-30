@@ -7,7 +7,7 @@ import (
 	"github.com/kaitokid2302/NewsAI/internal/handler/auth"
 	"github.com/kaitokid2302/NewsAI/internal/redis"
 	"github.com/kaitokid2302/NewsAI/internal/repository"
-	userservice "github.com/kaitokid2302/NewsAI/internal/service/user"
+	userservice "github.com/kaitokid2302/NewsAI/internal/service/auth"
 
 	swaggerfiles "github.com/swaggo/files"
 
