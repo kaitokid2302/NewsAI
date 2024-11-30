@@ -12,7 +12,7 @@ import (
 	"gopkg.in/gomail.v2"
 )
 
-func (s *UserServiceImpl) SendEmail(to string) (int, error) {
+func (s *AuthServiceImpl) SendEmail(to string) (int, error) {
 	templatePath := filepath.Join("internal", "email", "otp.html")
 
 	// Đọc nội dung file template
@@ -58,7 +58,7 @@ func (s *UserServiceImpl) SendEmail(to string) (int, error) {
 	return int(otpCode), nil
 }
 
-func (s *UserServiceImpl) ResendOTP(email string) (int, error) {
+func (s *AuthServiceImpl) ResendOTP(email string) (int, error) {
 	if s.userRepo.ExistUser(email) {
 		return 0, fmt.Errorf("user already exists")
 	}

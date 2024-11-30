@@ -23,7 +23,7 @@ func (a *AuthHandler) Login(c *gin.Context) {
 		c.JSON(output.StatusCode, output)
 		return
 	}
-	user, er := a.userService.Login(input.Email, input.Password)
+	user, er := a.authService.Login(input.Email, input.Password)
 	if er != nil {
 		output = Response{
 			StatusCode: http.StatusInternalServerError,

@@ -8,7 +8,7 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-type UserService interface {
+type AuthService interface {
 	Register(user *database.User) error
 	VerificationOTP(email string, code int) (string, error)
 	SendEmail(to string) (int, error)
@@ -18,16 +18,16 @@ type UserService interface {
 	Login(email, password string) (*database.User, error)
 }
 
-type UserServiceImpl struct {
+type AuthServiceImpl struct {
 	userRepo    repository.UserRepo
 	redisClient *redis.Client
 }
 
-func NewUserService(repo repository.UserRepo, redisClient *redis.Client) UserService {
-	return &UserServiceImpl{userRepo: repo, redisClient: redisClient}
+func NewAuthService(repo repository.UserRepo, redisClient *redis.Client) AuthService {
+	return &AuthServiceImpl{userRepo: repo, redisClient: redisClient}
 }
 
-func (s *UserServiceImpl) Login(email, password string) (*database.User, error) {
+func (s *AuthServiceImpl) Login(email, password string) (*database.User, error) {
 	user, er := s.userRepo.Login(email, password)
 	if er != nil {
 		return nil, er
@@ -36,7 +36,7 @@ func (s *UserServiceImpl) Login(email, password string) (*database.User, error) 
 	return user, nil
 }
 
-func (s *UserServiceImpl) Register(user *database.User) error {
+func (s *AuthServiceImpl) Register(user *database.User) error {
 	exist := s.userRepo.ExistUser(user.Email)
 	if exist {
 		return errors.New("user already exists")
@@ -57,7 +57,7 @@ func (s *UserServiceImpl) Register(user *database.User) error {
 
 }
 
-func (s *UserServiceImpl) VerificationOTP(email string, code int) (string, error) {
+func (s *AuthServiceImpl) VerificationOTP(email string, code int) (string, error) {
 	user, er := s.GetTempUser(email)
 	if er != nil || user.Email == "" {
 		return "", errors.New("user not found, register again")

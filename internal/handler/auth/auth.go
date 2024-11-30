@@ -5,18 +5,18 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/kaitokid2302/NewsAI/internal/database"
-	userservice "github.com/kaitokid2302/NewsAI/internal/service/auth"
+	authService "github.com/kaitokid2302/NewsAI/internal/service/auth"
 	"github.com/kaitokid2302/NewsAI/internal/service/jwt"
 )
 
 type AuthHandler struct {
-	userService userservice.UserService
+	authService authService.AuthService
 	jwtService  jwt.JWTservice
 }
 
-func NewAuthHandler(userService userservice.UserService, jwtService jwt.JWTservice) *AuthHandler {
+func NewAuthHandler(authService authService.AuthService, jwtService jwt.JWTservice) *AuthHandler {
 	return &AuthHandler{
-		userService: userService,
+		authService: authService,
 		jwtService:  jwtService,
 	}
 }
@@ -46,7 +46,7 @@ func (auth *AuthHandler) Register(c *gin.Context) {
 		c.JSON(response.StatusCode, response)
 		return
 	}
-	er := auth.userService.Register(&user)
+	er := auth.authService.Register(&user)
 	if er != nil {
 		response = Response{
 			StatusCode: http.StatusInternalServerError,
@@ -93,7 +93,7 @@ func (auth *AuthHandler) VerifyOTP(c *gin.Context) {
 		c.JSON(output.StatusCode, output)
 		return
 	}
-	name, er := auth.userService.VerificationOTP(input.Email, input.OTP)
+	name, er := auth.authService.VerificationOTP(input.Email, input.OTP)
 	if er != nil {
 		output = Response{
 			StatusCode: http.StatusInternalServerError,
@@ -141,7 +141,7 @@ func (auth *AuthHandler) ResendOTP(c *gin.Context) {
 		return
 	}
 
-	_, er := auth.userService.ResendOTP(email.Email)
+	_, er := auth.authService.ResendOTP(email.Email)
 	if er != nil {
 		output = Response{
 			StatusCode: http.StatusInternalServerError,
