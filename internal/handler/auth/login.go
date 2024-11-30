@@ -34,14 +34,12 @@ func (a *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 	token := a.jwtService.CreateToken(user.Email)
+	user.Password = ""
 	output = Response{
 		StatusCode: http.StatusOK,
 		Message:    "Login success",
 		JwtToken:   token,
-		Data: ResponseData{
-			Email: user.Email,
-			Name:  user.Name,
-		},
+		Data:       *user,
 	}
 	c.JSON(output.StatusCode, output)
 }

@@ -56,13 +56,11 @@ func (auth *AuthHandler) Register(c *gin.Context) {
 		c.JSON(response.StatusCode, response)
 		return
 	}
+	user.Password = ""
 	response = Response{
 		StatusCode: http.StatusOK,
-		Data: ResponseData{
-			Email: user.Email,
-			Name:  user.Name,
-		},
-		Message: "OTP has been sent to your email. The code is only valid for 5 minutes.",
+		Data:       user,
+		Message:    "OTP has been sent to your email. The code is only valid for 5 minutes.",
 	}
 	c.JSON(response.StatusCode, response)
 }
@@ -105,13 +103,14 @@ func (auth *AuthHandler) VerifyOTP(c *gin.Context) {
 		c.JSON(output.StatusCode, output)
 		return
 	}
+	user := database.User{
+		Email: input.Email,
+		Name:  name,
+	}
 	output = Response{
 		StatusCode: http.StatusOK,
 		Message:    "User has been registered successfully",
-		Data: ResponseData{
-			Email: input.Email,
-			Name:  name,
-		},
+		Data:       user,
 	}
 	c.JSON(output.StatusCode, output)
 }
@@ -152,13 +151,13 @@ func (auth *AuthHandler) ResendOTP(c *gin.Context) {
 		c.JSON(output.StatusCode, output)
 		return
 	}
+	user := database.User{
+		Email: email.Email,
+	}
 	output = Response{
 		StatusCode: http.StatusOK,
 		Message:    "OTP has been sent to your email. The code is only valid for 5 minutes.",
-		Data: ResponseData{
-			Email: email.Email,
-			Name:  "",
-		},
+		Data:       user,
 	}
 	c.JSON(output.StatusCode, output)
 }
