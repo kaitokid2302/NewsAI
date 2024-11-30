@@ -1,11 +1,11 @@
 package auth
 
 type Response struct {
-	StatusCode int
+	StatusCode int          `json:"statusCode,omitempty"`
 	Data       ResponseData `json:"data,omitempty"`
-	Er         string
-	Message    string
-	JwtToken   string `json:"jwt,omitempty"`
+	Er         string       `json:"error,omitempty"`
+	Message    string       `json:"message,omitempty"`
+	JwtToken   string       `json:"jwt,omitempty"`
 }
 
 type ResponseData struct {

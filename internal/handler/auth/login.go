@@ -8,8 +8,8 @@ import (
 
 func (a *AuthHandler) Login(c *gin.Context) {
 	var input struct {
-		Email    string `json:"email" binding:"required"`
-		Password string `json:"password" binding:"required"`
+		Email    string `json:"email" binding:"required" form:"email"`
+		Password string `json:"password" binding:"required" form:"password"`
 	}
 	var output Response
 

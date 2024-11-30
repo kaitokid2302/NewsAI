@@ -22,24 +22,24 @@ func NewUserRepo(db *gorm.DB) UserRepo {
 
 func (repo *UserRepoImpl) Login(email, password string) (*database.User, error) {
 	var user database.User
-	repo.db.Where("email = ? AND password = ?", email, password).First(&user)
+	repo.db.Debug().Where("email = ? AND password = ?", email, password).First(&user)
 	if user.ID == 0 {
 		return nil, gorm.ErrRecordNotFound
 	}
 	user.Password = ""
-	return &user, gorm.ErrRecordNotFound
+	return &user, nil
 
 }
 
 func (repo *UserRepoImpl) SaveUserDB(user *database.User) error {
 	db := repo.db
-	return db.Save(user).Error
+	return db.Debug().Save(user).Error
 }
 
 func (repo *UserRepoImpl) GetUserByEmail(email string) (*database.User, error) {
 	db := repo.db
 	var user database.User
-	if err := db.Where("email = ?", email).First(&user).Error; err != nil {
+	if err := db.Debug().Where("email = ?", email).First(&user).Error; err != nil {
 		return nil, err
 	}
 	return &user, nil
@@ -47,6 +47,6 @@ func (repo *UserRepoImpl) GetUserByEmail(email string) (*database.User, error) {
 
 func (repo *UserRepoImpl) ExistUser(email string) bool {
 	db := repo.db
-	count := db.Where("email = ?", email).Find(&database.User{}).RowsAffected
+	count := db.Debug().Where("email = ?", email).Find(&database.User{}).RowsAffected
 	return count > 0
 }
