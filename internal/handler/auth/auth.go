@@ -29,7 +29,7 @@ func (auth *AuthHandler) Register(c *gin.Context) {
 		return
 	}
 	var user database.User
-	automapper.Map(registerRequest, &user)
+	automapper.MapLoose(registerRequest, &user)
 	er := auth.authService.Register(&user)
 	if er != nil {
 		reponse.ReponseOutput(c, reponse.RegisterFail, "", nil)

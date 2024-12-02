@@ -25,7 +25,7 @@ const (
 )
 
 var msg = map[int]string{
-	RegisterSucess:  "User has been registered successfully",
+	RegisterSucess:  "User has been registered successfully, OTP has been sent to your email",
 	RegisterFail:    "Can not register user",
 	LoginFail:       "Can not login",
 	LoginSucess:     "Login successfully",
