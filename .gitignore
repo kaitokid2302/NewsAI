@@ -1,3 +1,4 @@
 .vscode
 internal/config/local.yaml
 .DS_Store
+.idea

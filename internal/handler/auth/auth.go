@@ -1,12 +1,13 @@
 package auth
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 	"github.com/kaitokid2302/NewsAI/internal/database"
 	authService "github.com/kaitokid2302/NewsAI/internal/service/auth"
 	"github.com/kaitokid2302/NewsAI/internal/service/jwt"
+	"github.com/kaitokid2302/NewsAI/pkg/reponse"
+	"github.com/kaitokid2302/NewsAI/pkg/request"
+	"github.com/peteprogrammer/go-automapper"
 )
 
 type AuthHandler struct {
@@ -21,143 +22,50 @@ func NewAuthHandler(authService authService.AuthService, jwtService jwt.JWTservi
 	}
 }
 
-// @Summary Register a new user
-// @Description Register a new user
-// @Tags auth
-// @Accept multipart/form-data
-// @Accept json
-// @Produce json
-// @Param   name     formData  string  true  "Username"
-// @Param   email    formData  string  true  "Email"
-// @Param   password formData  string  true  "Password"
-// @Success 200 {object} RegisterResponse
-// @Failure 400 {object} RegisterResponse
-// @Failure 500 {object} RegisterResponse
-// @Router /auth/register [post]
 func (auth *AuthHandler) Register(c *gin.Context) {
-	var user database.User
-	var response Response
-	if er := c.ShouldBind(&user); er != nil {
-		response = Response{
-			StatusCode: http.StatusBadRequest,
-			Er:         er.Error(),
-			Message:    "Invalid request",
-		}
-		c.JSON(response.StatusCode, response)
+	var registerRequest request.RegisterRequest
+	if er := c.ShouldBind(&registerRequest); er != nil {
+		reponse.ReponseOutput(c, reponse.RegisterFail, "", nil)
 		return
 	}
+	var user database.User
+	automapper.Map(registerRequest, &user)
 	er := auth.authService.Register(&user)
 	if er != nil {
-		response = Response{
-			StatusCode: http.StatusInternalServerError,
-			Er:         er.Error(),
-			Message:    "Can not register user",
-		}
-		c.JSON(response.StatusCode, response)
+		reponse.ReponseOutput(c, reponse.RegisterFail, "", nil)
 		return
 	}
 	user.Password = ""
-	response = Response{
-		StatusCode: http.StatusOK,
-		Data:       user,
-		Message:    "OTP has been sent to your email. The code is only valid for 5 minutes.",
-	}
-	c.JSON(response.StatusCode, response)
+	reponse.ReponseOutput(c, reponse.RegisterSucess, "", user)
 }
 
-// @Summary OTP authentication
-// @Description OTP authentication
-// @Tags auth
-// @Accept json
-// @Accept multipart/form-data
-// @Produce json
-// @Param request body OTPVerificationRequest true "OTP Verification Request"
-// @Success 200 {object} RegisterResponse
-// @Failure 400 {object} RegisterResponse
-// @Failure 500 {object} RegisterResponse
-// @Router /auth/verify [post]
 func (auth *AuthHandler) VerifyOTP(c *gin.Context) {
-	// email
-	// otp
 
-	var input OTPVerificationRequest
-
-	var output Response
+	var input request.OTPVerificationRequest
 
 	if er := c.ShouldBind(&input); er != nil {
-		output = Response{
-			StatusCode: http.StatusBadRequest,
-			Er:         er.Error(),
-			Message:    "Invalid request",
-		}
-		c.JSON(output.StatusCode, output)
+		reponse.ReponseOutput(c, reponse.OTPVerifyFail, "", nil)
 		return
 	}
 	name, er := auth.authService.VerificationOTP(input.Email, input.OTP)
 	if er != nil {
-		output = Response{
-			StatusCode: http.StatusInternalServerError,
-			Er:         er.Error(),
-			Message:    "Can not verify OTP",
-		}
-		c.JSON(output.StatusCode, output)
+		reponse.ReponseOutput(c, reponse.OTPVerifyFail, "", nil)
 		return
 	}
-	user := database.User{
-		Email: input.Email,
-		Name:  name,
-	}
-	output = Response{
-		StatusCode: http.StatusOK,
-		Message:    "User has been registered successfully",
-		Data:       user,
-	}
-	c.JSON(output.StatusCode, output)
+	reponse.ReponseOutput(c, reponse.OTPVerifySucess, "", database.User{Email: input.Email, Name: name})
 }
 
-// @Summary Resend OTP
-// @Description Resend OTP
-// @Tags auth
-// @Accept json
-// @Accept multipart/form-data
-// @Produce json
-// @Param email formData string true "Email"
-// @Success 200 {object} RegisterResponse
-// @Failure 400 {object} RegisterResponse
-// @Failure 500 {object} RegisterResponse
-// @Router /auth/verify/resend [post]
 func (auth *AuthHandler) ResendOTP(c *gin.Context) {
-	var email struct {
-		Email string `json:"email" binding:"required,email" form:"email"`
-	}
-	var output Response
-	if er := c.ShouldBind(&email); er != nil {
-		output = Response{
-			StatusCode: http.StatusBadRequest,
-			Er:         er.Error(),
-			Message:    "Invalid request",
-		}
-		c.JSON(output.StatusCode, output)
+	var input request.ResendOTPRequest
+	if er := c.ShouldBind(&input); er != nil {
+		reponse.ReponseOutput(c, reponse.ResendOTPFail, "", nil)
 		return
 	}
 
-	_, er := auth.authService.ResendOTP(email.Email)
+	_, er := auth.authService.ResendOTP(input.Email)
 	if er != nil {
-		output = Response{
-			StatusCode: http.StatusInternalServerError,
-			Er:         er.Error(),
-			Message:    "Can not resend OTP",
-		}
-		c.JSON(output.StatusCode, output)
+		reponse.ReponseOutput(c, reponse.ResendOTPFail, "", nil)
 		return
 	}
-	user := database.User{
-		Email: email.Email,
-	}
-	output = Response{
-		StatusCode: http.StatusOK,
-		Message:    "OTP has been sent to your email. The code is only valid for 5 minutes.",
-		Data:       user,
-	}
-	c.JSON(output.StatusCode, output)
+	reponse.ReponseOutput(c, reponse.ResendOTPSucess, "", database.User{Email: input.Email})
 }

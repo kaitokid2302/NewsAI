@@ -1,45 +1,24 @@
 package auth
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
+	"github.com/kaitokid2302/NewsAI/pkg/reponse"
+	"github.com/kaitokid2302/NewsAI/pkg/request"
 )
 
 func (a *AuthHandler) Login(c *gin.Context) {
-	var input struct {
-		Email    string `json:"email" binding:"required" form:"email"`
-		Password string `json:"password" binding:"required" form:"password"`
-	}
-	var output Response
+	var input request.LoginRequest
 
 	if er := c.ShouldBind(&input); er != nil {
-
-		output = Response{
-			StatusCode: http.StatusBadRequest,
-			Er:         er.Error(),
-			Message:    "Username or password incorrect",
-		}
-		c.JSON(output.StatusCode, output)
+		reponse.ReponseOutput(c, reponse.LoginFail, "", nil)
 		return
 	}
 	user, er := a.authService.Login(input.Email, input.Password)
 	if er != nil {
-		output = Response{
-			StatusCode: http.StatusInternalServerError,
-			Er:         er.Error(),
-			Message:    "Username or password incorrect",
-		}
-		c.JSON(output.StatusCode, output)
+		reponse.ReponseOutput(c, reponse.LoginFail, "", nil)
 		return
 	}
 	token := a.jwtService.CreateToken(user.Email)
 	user.Password = ""
-	output = Response{
-		StatusCode: http.StatusOK,
-		Message:    "Login success",
-		JwtToken:   token,
-		Data:       *user,
-	}
-	c.JSON(output.StatusCode, output)
+	reponse.ReponseOutput(c, reponse.LoginSucess, "", gin.H{"user": user, "token": token})
 }
