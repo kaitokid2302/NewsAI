@@ -29,9 +29,9 @@ func (uHandler *UserHandler) UpdateUser(c *gin.Context) {
 	if input.Avatar != nil {
 		file, _ := input.Avatar.Open()
 		defer file.Close()
-		u, er = uHandler.userService.UpdateUser(c, input.Name, &file)
+		u, er = uHandler.userService.UpdateUser(c, input.Name, input.Avatar.Filename, &file)
 	} else {
-		u, er = uHandler.userService.UpdateUser(c, input.Name, nil)
+		u, er = uHandler.userService.UpdateUser(c, input.Name, input.Avatar.Filename, nil)
 	}
 	if er != nil {
 		reponse.ReponseOutput(c, reponse.UpdateUserFail, "", u)

@@ -9,7 +9,7 @@ import (
 )
 
 type UserService interface {
-	UpdateUser(c *gin.Context, name string, file *multipart.File) (*database.User, error)
+	UpdateUser(c *gin.Context, name string, fileName string, file *multipart.File) (*database.User, error)
 }
 
 type UserServiceImpl struct {
@@ -24,13 +24,13 @@ func NewUserService(s3 s3.UploadFileS3Service, userRepository repository.UserRep
 	}
 }
 
-func (u *UserServiceImpl) UpdateUser(c *gin.Context, name string, file *multipart.File) (*database.User, error) {
+func (u *UserServiceImpl) UpdateUser(c *gin.Context, name string, fileName string, file *multipart.File) (*database.User, error) {
 	user, er := u.userRepository.GetUserByEmail(c.GetString("email"))
 	if er != nil {
 		return nil, er
 	}
 	if file != nil {
-		link, er := u.s3.UploadFile(*file)
+		link, er := u.s3.UploadFile(fileName, *file)
 		if er != nil {
 			return nil, er
 		}
