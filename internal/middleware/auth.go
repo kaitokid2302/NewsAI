@@ -31,7 +31,6 @@ func (a *Auth) JWTverify() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-
 		c.Set("email", email)
 		c.Next()
 	}

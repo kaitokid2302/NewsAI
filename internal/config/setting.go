@@ -9,6 +9,7 @@ type Config struct {
 	GoogleEmail `mapstructure:"google_email"`
 	Redis
 	JWT
+	AWS
 }
 
 type GoogleEmail struct {
@@ -31,4 +32,11 @@ type Database struct {
 type Redis struct {
 	Host string
 	Port int
+}
+
+type AWS struct {
+	PublicAccessKey  string `mapstructure:"public_access_key"`
+	PrivateAccessKey string `mapstructure:"private_access_key"`
+	Region           string `mapstructure:"region"`
+	Bucket           string `mapstructure:"bucket"`
 }

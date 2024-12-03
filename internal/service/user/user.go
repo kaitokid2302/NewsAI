@@ -1,4 +1,43 @@
 package user
 
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/kaitokid2302/NewsAI/internal/database"
+	"github.com/kaitokid2302/NewsAI/internal/repository"
+	"github.com/kaitokid2302/NewsAI/internal/service/s3"
+	"mime/multipart"
+)
+
 type UserService interface {
+	UpdateUser(c *gin.Context, name string, file *multipart.File) (*database.User, error)
+}
+
+type UserServiceImpl struct {
+	s3             s3.UploadFileS3Service
+	userRepository repository.UserRepo
+}
+
+func NewUserService(s3 s3.UploadFileS3Service, userRepository repository.UserRepo) UserService {
+	return &UserServiceImpl{
+		s3,
+		userRepository,
+	}
+}
+
+func (u *UserServiceImpl) UpdateUser(c *gin.Context, name string, file *multipart.File) (*database.User, error) {
+	user, er := u.userRepository.GetUserByEmail(c.GetString("email"))
+	if er != nil {
+		return nil, er
+	}
+	if file != nil {
+		link, er := u.s3.UploadFile(*file)
+		if er != nil {
+			return nil, er
+		}
+		user.Avatar = link
+	}
+	user.Name = name
+	er = u.userRepository.SaveUserDB(user)
+	user.Password = ""
+	return user, er
 }

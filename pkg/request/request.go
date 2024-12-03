@@ -1,5 +1,7 @@
 package request
 
+import "mime/multipart"
+
 type OTPVerificationRequest struct {
 	Email string `json:"email" binding:"required,email" form:"email"`
 	OTP   int    `json:"otp" binding:"required" form:"otp"`
@@ -18,4 +20,9 @@ type RegisterRequest struct {
 type LoginRequest struct {
 	Email    string `json:"email" binding:"required,email" form:"email"`
 	Password string `json:"password" binding:"required" form:"password"`
+}
+
+type UpdateUserRequest struct {
+	Name   string                `json:"name" form:"name"`
+	Avatar *multipart.FileHeader `json:"avatar" form:"avatar"`
 }
