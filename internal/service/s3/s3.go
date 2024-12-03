@@ -37,7 +37,7 @@ func (u *UploadFileS3ServiceImpl) UploadFile(name string, file multipart.File) (
 	// Detect content type
 	contentType := http.DetectContentType(buffer)
 
-	fileName := "img" + fmt.Sprintf("%v", rand.Int32N(1000000000))
+	fileName := "img" + fmt.Sprintf("%v", rand.Int32N(1000000000)) + "-" + fmt.Sprintf("%v", rand.Int32N(1000000000))
 	uploader := s3manager.NewUploader(u.session)
 	_, er := uploader.Upload(&s3manager.UploadInput{
 		Bucket:      &config.Global.Bucket,
