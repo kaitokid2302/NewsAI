@@ -2,13 +2,14 @@ package s3
 
 import (
 	"fmt"
+	"math/rand/v2"
+	"mime/multipart"
+	"net/http"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/kaitokid2302/NewsAI/internal/config"
-	"math/rand/v2"
-	"mime/multipart"
-	"net/http"
 )
 
 type UploadFileS3Service interface {
@@ -23,7 +24,7 @@ func NewUploadFileS3Service(session *session.Session) *UploadFileS3ServiceImpl {
 	return &UploadFileS3ServiceImpl{session: session}
 }
 
-func (u *UploadFileS3ServiceImpl) UploadFile(name string, file multipart.File) (string, error) {
+func (u *UploadFileS3ServiceImpl) UploadFile(_ string, file multipart.File) (string, error) {
 
 	buffer := make([]byte, 512)
 	_, err := file.Read(buffer)
@@ -32,7 +33,10 @@ func (u *UploadFileS3ServiceImpl) UploadFile(name string, file multipart.File) (
 	}
 
 	// Seek về đầu file sau khi đã đọc
-	file.Seek(0, 0)
+	_, err = file.Seek(0, 0)
+	if err != nil {
+		return "", err
+	}
 
 	// Detect content type
 	contentType := http.DetectContentType(buffer)

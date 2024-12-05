@@ -53,7 +53,10 @@ func (s *AuthServiceImpl) SendEmail(to string) (int, error) {
 		fmt.Println("here")
 		return 0, err
 	}
-	s.SetOTPCode(to, int(otpCode))
+	err = s.SetOTPCode(to, int(otpCode))
+	if err != nil {
+		return 0, err
+	}
 
 	return int(otpCode), nil
 }

@@ -1,6 +1,8 @@
 package user
 
 import (
+	"mime/multipart"
+
 	"github.com/gin-gonic/gin"
 	"github.com/kaitokid2302/NewsAI/internal/database"
 	"github.com/kaitokid2302/NewsAI/internal/service/user"
@@ -28,7 +30,12 @@ func (uHandler *UserHandler) UpdateUser(c *gin.Context) {
 	var u *database.User
 	if input.Avatar != nil {
 		file, _ := input.Avatar.Open()
-		defer file.Close()
+		defer func(file multipart.File) {
+			err := file.Close()
+			if err != nil {
+				reponse.ReponseOutput(c, reponse.UpdateUserFail, "", nil)
+			}
+		}(file)
 		u, er = uHandler.userService.UpdateUser(c, input.Name, input.Avatar.Filename, &file)
 	} else {
 		u, er = uHandler.userService.UpdateUser(c, input.Name, input.Avatar.Filename, nil)
