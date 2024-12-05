@@ -1,23 +1,23 @@
 package reponse
 
 const (
-	// auth
+	// RegisterSucess auth
 	RegisterSucess = 101
 	RegisterFail   = 102
 
-	// login
+	// LoginSucess login
 	LoginSucess = 201
 	LoginFail   = 202
 
-	// otp
+	// OTPVerifySucess otp
 	OTPVerifySucess = 301
 	OTPVerifyFail   = 302
 
-	// resend otp
+	// ResendOTPSucess resend otp
 	ResendOTPSucess = 401
 	ResendOTPFail   = 402
 
-	// jwt
+	// JWTCreateFail jwt
 	JWTCreateFail   = 501
 	JWTCreateSucess = 502
 	JWTVerifySucess = 503

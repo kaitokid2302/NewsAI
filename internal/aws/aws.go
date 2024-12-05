@@ -8,12 +8,12 @@ import (
 )
 
 func AwsInit() *session.Session {
-	session, er := session.NewSession(&aws.Config{
+	newSession, er := session.NewSession(&aws.Config{
 		Region:      &config.Global.Region,
 		Credentials: credentials.NewStaticCredentials(config.Global.PublicAccessKey, config.Global.PrivateAccessKey, ""),
 	})
 	if er != nil {
 		panic(er)
 	}
-	return session
+	return newSession
 }

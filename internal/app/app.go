@@ -44,5 +44,8 @@ func Run() {
 	userGroup.Use(middleware.NewAuth(jwt.NewJWTService()).JWTverify())
 	userHandler.InitRoute(userGroup)
 
-	r.Run(":8080")
+	err := r.Run(":8080")
+	if err != nil {
+		return
+	}
 }
