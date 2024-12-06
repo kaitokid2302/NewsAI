@@ -9,7 +9,7 @@ type User struct {
 	Email         string  `gorm:"unique" binding:"required,email" form:"email" json:"email,omitempty"`
 	Password      string  `validate:"binding" form:"password" json:"password,omitempty"`
 	Avatar        string  `form:"avatar" json:"avatar,omitempty"`
-	TopicInterest []Topic `gorm:"user_topics;" json:"topicInterest,omitempty"`
+	TopicInterest []Topic `gorm:"many2many:user_topics" json:"topic_interest,omitempty"`
 }
 
 type Topic struct {

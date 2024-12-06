@@ -16,7 +16,7 @@ func InitDatabase() *gorm.DB {
 	if er != nil {
 		panic(er)
 	}
-	err := db.AutoMigrate(&model.User{}, &model.Topic{}, &model.Article{})
+	err := db.AutoMigrate(&model.Topic{}, &model.User{}, &model.Article{})
 	if err != nil {
 		return nil
 	}
@@ -26,7 +26,7 @@ func InitDatabase() *gorm.DB {
 
 func InitTopic(db *gorm.DB) {
 	// model.topics
-	er := db.Save(&model.Topics).Error
+	er := db.Debug().Save(&model.Topics).Error
 	if er != nil {
 		panic(er)
 	}
