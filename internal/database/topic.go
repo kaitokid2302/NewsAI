@@ -1,7 +1,11 @@
-package model
+package topic
+
+import (
+	"github.com/kaitokid2302/NewsAI/internal/database"
+)
 
 var (
-	Topics = []Topic{
+	Topics = []database.Topic{
 		{
 			Name:    "Trang chủ",
 			RssLink: "https://vnexpress.net/rss/tin-moi-nhat.rss",
