@@ -10,3 +10,9 @@ type User struct {
 	Password string `validate:"binding" form:"password" json:"password,omitempty"`
 	Avatar   string `form:"avatar" json:"avatar,omitempty"`
 }
+
+type Topic struct {
+	gorm.Model
+	Name    string `form:"name" binding:"required" json:"name,omitempty"`
+	RssLink string `form:"rss_link" binding:"required" json:"rss_link,omitempty"`
+}
