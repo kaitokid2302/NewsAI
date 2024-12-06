@@ -2,7 +2,7 @@ package auth
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/kaitokid2302/NewsAI/internal/database"
+	"github.com/kaitokid2302/NewsAI/internal/database/model"
 	authService "github.com/kaitokid2302/NewsAI/internal/service/auth"
 	"github.com/kaitokid2302/NewsAI/internal/service/jwt"
 	"github.com/kaitokid2302/NewsAI/pkg/reponse"
@@ -28,7 +28,7 @@ func (auth *AuthHandler) Register(c *gin.Context) {
 		reponse.ReponseOutput(c, reponse.RegisterFail, "", nil)
 		return
 	}
-	var user database.User
+	var user model.User
 	automapper.MapLoose(registerRequest, &user)
 	er := auth.authService.Register(&user)
 	if er != nil {
@@ -52,7 +52,7 @@ func (auth *AuthHandler) VerifyOTP(c *gin.Context) {
 		reponse.ReponseOutput(c, reponse.OTPVerifyFail, "", nil)
 		return
 	}
-	reponse.ReponseOutput(c, reponse.OTPVerifySucess, "", database.User{Email: input.Email, Name: name})
+	reponse.ReponseOutput(c, reponse.OTPVerifySucess, "", model.User{Email: input.Email, Name: name})
 }
 
 func (auth *AuthHandler) ResendOTP(c *gin.Context) {
@@ -67,5 +67,5 @@ func (auth *AuthHandler) ResendOTP(c *gin.Context) {
 		reponse.ReponseOutput(c, reponse.ResendOTPFail, "", nil)
 		return
 	}
-	reponse.ReponseOutput(c, reponse.ResendOTPSucess, "", database.User{Email: input.Email})
+	reponse.ReponseOutput(c, reponse.ResendOTPSucess, "", model.User{Email: input.Email})
 }

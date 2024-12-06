@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/kaitokid2302/NewsAI/internal/database"
+	"github.com/kaitokid2302/NewsAI/internal/database/model"
 )
 
 func (s *AuthServiceImpl) SetOTPCode(email string, code int) error {
@@ -20,7 +20,7 @@ func (s *AuthServiceImpl) GetOTPCode(email string) (int, error) {
 	return intCode, er
 }
 
-func (s *AuthServiceImpl) SaveTempUser(user *database.User) error {
+func (s *AuthServiceImpl) SaveTempUser(user *model.User) error {
 	x, er := json.Marshal(user)
 	if er != nil {
 		return er
@@ -29,9 +29,9 @@ func (s *AuthServiceImpl) SaveTempUser(user *database.User) error {
 	return er
 }
 
-func (s *AuthServiceImpl) GetTempUser(email string) (*database.User, error) {
+func (s *AuthServiceImpl) GetTempUser(email string) (*model.User, error) {
 	x := s.redisClient.Get(context.Background(), email+"temp").Val()
-	var user database.User
+	var user model.User
 	er := json.Unmarshal([]byte(x), &user)
 	return &user, er
 }

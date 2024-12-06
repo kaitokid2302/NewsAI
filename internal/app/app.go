@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/kaitokid2302/NewsAI/internal/aws"
 	"github.com/kaitokid2302/NewsAI/internal/database"
+	"github.com/kaitokid2302/NewsAI/internal/elasticsearch"
 	"github.com/kaitokid2302/NewsAI/internal/handler/auth"
 	user2 "github.com/kaitokid2302/NewsAI/internal/handler/user"
 	"github.com/kaitokid2302/NewsAI/internal/middleware"
@@ -22,10 +23,12 @@ import (
 
 func Run() {
 	r := gin.Default()
+
 	// cors all
 	r.Use(cors.Default())
 	url := ginSwagger.URL("http://localhost:8080/swagger/doc.json")
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler, url))
+	_ = elasticsearch.InitElasticSearch()
 
 	redisClient := redis.InitRedis()
 	db := database.InitDatabase()

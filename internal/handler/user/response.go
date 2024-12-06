@@ -1,11 +1,11 @@
 package user
 
 import (
-	"github.com/kaitokid2302/NewsAI/internal/database"
+	"github.com/kaitokid2302/NewsAI/internal/database/model"
 )
 
 type UserReponse struct {
-	StatusCode int           `json:"statusCode,omitempty"`
-	Data       database.User `json:"data,omitempty"`
-	Message    string        `json:"message,omitempty"`
+	StatusCode int        `json:"statusCode,omitempty"`
+	Data       model.User `json:"data,omitempty"`
+	Message    string     `json:"message,omitempty"`
 }
