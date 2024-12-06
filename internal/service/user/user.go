@@ -4,13 +4,13 @@ import (
 	"mime/multipart"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kaitokid2302/NewsAI/internal/database/model"
+	"github.com/kaitokid2302/NewsAI/internal/database"
 	"github.com/kaitokid2302/NewsAI/internal/repository"
 	"github.com/kaitokid2302/NewsAI/internal/service/s3"
 )
 
 type UserService interface {
-	UpdateUser(c *gin.Context, name string, fileName string, file *multipart.File) (*model.User, error)
+	UpdateUser(c *gin.Context, name string, fileName string, file *multipart.File) (*database.User, error)
 }
 
 type UserServiceImpl struct {
@@ -25,7 +25,7 @@ func NewUserService(s3 s3.UploadFileS3Service, userRepository repository.UserRep
 	}
 }
 
-func (u *UserServiceImpl) UpdateUser(c *gin.Context, name string, fileName string, file *multipart.File) (*model.User, error) {
+func (u *UserServiceImpl) UpdateUser(c *gin.Context, name string, fileName string, file *multipart.File) (*database.User, error) {
 	user, er := u.userRepository.GetUserByEmail(c.GetString("email"))
 	if er != nil {
 		return nil, er

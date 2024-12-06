@@ -3,19 +3,19 @@ package auth
 import (
 	"errors"
 
-	"github.com/kaitokid2302/NewsAI/internal/database/model"
+	"github.com/kaitokid2302/NewsAI/internal/database"
 	"github.com/kaitokid2302/NewsAI/internal/repository"
 	"github.com/redis/go-redis/v9"
 )
 
 type AuthService interface {
-	Register(user *model.User) error
+	Register(user *database.User) error
 	VerificationOTP(email string, code int) (string, error)
 	SendEmail(to string) (int, error)
 	SetOTPCode(email string, code int) error
 	GetOTPCode(email string) (int, error)
 	ResendOTP(email string) (int, error)
-	Login(email, password string) (*model.User, error)
+	Login(email, password string) (*database.User, error)
 }
 
 type AuthServiceImpl struct {
@@ -27,7 +27,7 @@ func NewAuthService(repo repository.UserRepo, redisClient *redis.Client) AuthSer
 	return &AuthServiceImpl{userRepo: repo, redisClient: redisClient}
 }
 
-func (s *AuthServiceImpl) Login(email, password string) (*model.User, error) {
+func (s *AuthServiceImpl) Login(email, password string) (*database.User, error) {
 	user, er := s.userRepo.Login(email, password)
 	if er != nil {
 		return nil, er
@@ -36,7 +36,7 @@ func (s *AuthServiceImpl) Login(email, password string) (*model.User, error) {
 	return user, nil
 }
 
-func (s *AuthServiceImpl) Register(user *model.User) error {
+func (s *AuthServiceImpl) Register(user *database.User) error {
 	exist := s.userRepo.ExistUser(user.Email)
 	if exist {
 		return errors.New("user already exists")
