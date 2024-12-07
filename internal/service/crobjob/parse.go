@@ -63,6 +63,18 @@ func (r *CronJobArticleService) ArticleFromTopic(topic *database.Topic) ([]*data
 	}
 	var articles []*database.Article
 	for _, item := range rss.Channel.Items {
+		// description, after /br>
+		description := item.Description
+		// find index of </br>
+		index := 0
+		for i := len(description) - 5; i >= 0; i-- {
+			if description[i:i+5] == "</br>" {
+				index = i
+				break
+			}
+		}
+		// get description after </br>
+		item.Description = description[index+5:]
 		article := database.Article{
 			Title:          item.Title,
 			ImageEnclosure: item.Enclosure.URL,

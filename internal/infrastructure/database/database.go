@@ -25,8 +25,19 @@ func InitDatabase() *gorm.DB {
 
 func InitTopic(db *gorm.DB) {
 	// model.topics
-	er := db.Debug().Save(&Topics).Error
-	if er != nil {
-		panic(er)
+	for i := 0; i < len(Topics); i++ {
+		t := &Topics[i]
+		count := db.Where("name = ?", t.Name).Find(&Topic{}).RowsAffected
+		if count == 0 {
+			er := db.Save(t)
+			if er.Error != nil {
+				panic(er)
+			}
+		} else {
+			er := db.Where("name = ?", t.Name).First(&Topics[i])
+			if er.Error != nil {
+				panic(er)
+			}
+		}
 	}
 }

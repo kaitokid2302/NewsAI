@@ -6,12 +6,14 @@ import (
 	"github.com/kaitokid2302/NewsAI/internal/handler/auth"
 	user2 "github.com/kaitokid2302/NewsAI/internal/handler/user"
 	"github.com/kaitokid2302/NewsAI/internal/infrastructure/aws"
+	crobjob2 "github.com/kaitokid2302/NewsAI/internal/infrastructure/crobjob"
 	"github.com/kaitokid2302/NewsAI/internal/infrastructure/database"
 	"github.com/kaitokid2302/NewsAI/internal/infrastructure/elasticsearch"
 	"github.com/kaitokid2302/NewsAI/internal/infrastructure/redis"
 	"github.com/kaitokid2302/NewsAI/internal/middleware"
 	"github.com/kaitokid2302/NewsAI/internal/repository"
 	authService "github.com/kaitokid2302/NewsAI/internal/service/auth"
+	crobjob3 "github.com/kaitokid2302/NewsAI/internal/service/crobjob"
 	"github.com/kaitokid2302/NewsAI/internal/service/jwt"
 	"github.com/kaitokid2302/NewsAI/internal/service/s3"
 	"github.com/kaitokid2302/NewsAI/internal/service/user"
@@ -46,6 +48,11 @@ func Run() {
 	userGroup := r.Group("/user")
 	userGroup.Use(middleware.NewAuth(jwt.NewJWTService()).JWTverify())
 	userHandler.InitRoute(userGroup)
+
+	articleRepo := repository.NewArticleRepo(db)
+	crobjobservice := crobjob3.NewCronJobArticleService(articleRepo)
+	crobjob := crobjob2.NewCrobjob(*crobjobservice)
+	crobjob.Run()
 
 	err := r.Run(":8080")
 	if err != nil {

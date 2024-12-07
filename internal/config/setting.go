@@ -10,6 +10,11 @@ type Config struct {
 	Redis
 	JWT
 	AWS
+	Crobjob `mapstructure:"crobjob"`
+}
+
+type Crobjob struct {
+	Time int `mapstructure:"time"`
 }
 
 type GoogleEmail struct {

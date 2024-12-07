@@ -1,6 +1,9 @@
 package crobjob
 
 import (
+	"time"
+
+	"github.com/kaitokid2302/NewsAI/internal/config"
 	"github.com/kaitokid2302/NewsAI/internal/infrastructure/database"
 	"github.com/kaitokid2302/NewsAI/internal/service/crobjob"
 )
@@ -15,8 +18,11 @@ func NewCrobjob(crobjobService crobjob.CronJobArticleService) *Crobjob {
 	}
 }
 
-func (c *Crobjob) GetAllArticle() {
-	for _, topic := range database.Topics {
-		c.crobjobService.GetArticle(&topic)
+func (c *Crobjob) Run() {
+	for {
+		for _, topic := range database.Topics {
+			c.crobjobService.GetArticle(&topic)
+		}
+		time.Sleep(time.Second * time.Duration(config.Global.Time))
 	}
 }
