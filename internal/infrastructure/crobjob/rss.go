@@ -1,7 +1,7 @@
 package crobjob
 
 import (
-	"github.com/kaitokid2302/NewsAI/internal/database"
+	"github.com/kaitokid2302/NewsAI/internal/infrastructure/database"
 	"github.com/kaitokid2302/NewsAI/internal/service/crobjob"
 )
 
