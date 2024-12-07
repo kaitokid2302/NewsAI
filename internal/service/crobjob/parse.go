@@ -1,11 +1,11 @@
-package rss
+package crobjob
 
 import (
 	"encoding/xml"
 	"io/ioutil"
 	"net/http"
 
-	"github.com/kaitokid2302/NewsAI/internal/database"
+	"github.com/kaitokid2302/NewsAI/internal/infrastructure/database"
 )
 
 type Rss struct {
@@ -45,17 +45,7 @@ type Enclosure struct {
 	URL    string `xml:"url,attr"`
 }
 
-type RssParser interface {
-	GetArticle(topic *database.Topic) ([]*database.Article, error)
-}
-
-type RssParserImpl struct {
-}
-
-func NewRssParser() RssParser {
-	return &RssParserImpl{}
-}
-func (r *RssParserImpl) GetArticle(topic *database.Topic) ([]*database.Article, error) {
+func (r *CronJobArticleService) ArticleFromTopic(topic *database.Topic) ([]*database.Article, error) {
 	link := topic.RssLink
 	res, er := http.Get(link)
 	if er != nil {

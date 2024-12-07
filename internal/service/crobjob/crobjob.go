@@ -1,14 +1,12 @@
 package crobjob
 
 import (
-	"github.com/kaitokid2302/NewsAI/internal/database"
+	"github.com/kaitokid2302/NewsAI/internal/infrastructure/database"
 	"github.com/kaitokid2302/NewsAI/internal/repository"
-	"github.com/kaitokid2302/NewsAI/internal/rss"
 )
 
 type CronJobArticleService struct {
 	articleRepo repository.ArticleRepo
-	rssParser   rss.RssParser
 }
 
 func NewCronJobArticleService(articleRepo repository.ArticleRepo) *CronJobArticleService {
@@ -16,7 +14,7 @@ func NewCronJobArticleService(articleRepo repository.ArticleRepo) *CronJobArticl
 }
 
 func (c *CronJobArticleService) GetArticle(topic *database.Topic) error {
-	articles, er := c.rssParser.GetArticle(topic)
+	articles, er := c.ArticleFromTopic(topic)
 	if er != nil {
 		return er
 	}

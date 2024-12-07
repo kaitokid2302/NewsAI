@@ -4,7 +4,7 @@ import (
 	"mime/multipart"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kaitokid2302/NewsAI/internal/database"
+	"github.com/kaitokid2302/NewsAI/internal/infrastructure/database"
 	"github.com/kaitokid2302/NewsAI/internal/service/user"
 	"github.com/kaitokid2302/NewsAI/pkg/reponse"
 	"github.com/kaitokid2302/NewsAI/pkg/request"

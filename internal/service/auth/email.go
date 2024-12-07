@@ -13,7 +13,7 @@ import (
 )
 
 func (s *AuthServiceImpl) SendEmail(to string) (int, error) {
-	templatePath := filepath.Join("internal", "email", "otp.html")
+	templatePath := filepath.Join("internal", "infrastructure", "email", "otp.html")
 
 	// Đọc nội dung file template
 	templateContent, err := ioutil.ReadFile(templatePath)

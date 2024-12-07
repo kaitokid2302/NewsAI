@@ -2,7 +2,7 @@ package auth
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/kaitokid2302/NewsAI/internal/database"
+	"github.com/kaitokid2302/NewsAI/internal/infrastructure/database"
 	authService "github.com/kaitokid2302/NewsAI/internal/service/auth"
 	"github.com/kaitokid2302/NewsAI/internal/service/jwt"
 	"github.com/kaitokid2302/NewsAI/pkg/reponse"

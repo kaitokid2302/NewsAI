@@ -3,7 +3,7 @@ package auth
 import (
 	"errors"
 
-	"github.com/kaitokid2302/NewsAI/internal/database"
+	"github.com/kaitokid2302/NewsAI/internal/infrastructure/database"
 	"github.com/kaitokid2302/NewsAI/internal/repository"
 	"github.com/redis/go-redis/v9"
 )

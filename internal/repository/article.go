@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"github.com/kaitokid2302/NewsAI/internal/database"
+	"github.com/kaitokid2302/NewsAI/internal/infrastructure/database"
 	"gorm.io/gorm"
 )
 
