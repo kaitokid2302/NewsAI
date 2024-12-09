@@ -25,7 +25,7 @@ func NewAIService(provider config.Provider) AIservice {
 
 func (g *aiServiceImpl) Summarize(text string) (string, error) {
 	bodyMap := map[string]interface{}{
-		"model": "meta-llama/llama-3.1-70b-instruct:free",
+		"model": g.provider.Name,
 		"messages": []map[string]interface{}{ // messages là một mảng
 			{
 				"role":    "user",

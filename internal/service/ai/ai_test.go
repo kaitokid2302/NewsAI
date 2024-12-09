@@ -13,7 +13,7 @@ func TestAIService(t *testing.T) {
 
 	aiService := NewAIService(provider)
 
-	ans, err := aiService.Summarize("Hello")
+	ans, err := aiService.Summarize("Hello, name?")
 	assert.Nil(t, err)
 
 	assert.NotEmpty(t, ans)
