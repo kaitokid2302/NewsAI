@@ -12,6 +12,16 @@ type Config struct {
 	AWS
 	Crobjob `mapstructure:"crobjob"`
 	Elastic `mapstructure:"elastic"`
+	AI      `mapstructure:"ai"`
+}
+
+type AI struct {
+	Provider []Provider `mapstructure:"provider"`
+}
+
+type Provider struct {
+	Name   string `mapstructure:"name"`
+	ApiKey string `mapstructure:"apikey"`
 }
 
 type Elastic struct {
