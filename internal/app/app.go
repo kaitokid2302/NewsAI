@@ -8,7 +8,7 @@ import (
 	"github.com/kaitokid2302/NewsAI/internal/infrastructure/aws"
 	crobjob2 "github.com/kaitokid2302/NewsAI/internal/infrastructure/crobjob"
 	"github.com/kaitokid2302/NewsAI/internal/infrastructure/database"
-	"github.com/kaitokid2302/NewsAI/internal/infrastructure/elasticsearch"
+	"github.com/kaitokid2302/NewsAI/internal/infrastructure/elastic"
 	"github.com/kaitokid2302/NewsAI/internal/infrastructure/redis"
 	"github.com/kaitokid2302/NewsAI/internal/middleware"
 	"github.com/kaitokid2302/NewsAI/internal/repository"
@@ -30,7 +30,7 @@ func Run() {
 	r.Use(cors.Default())
 	url := ginSwagger.URL("http://localhost:8080/swagger/doc.json")
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler, url))
-	_ = elasticsearch.InitElasticSearch()
+	_ = elastic.InitElasticSearch()
 
 	redisClient := redis.InitRedis()
 	db := database.InitDatabase()

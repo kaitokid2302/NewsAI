@@ -11,6 +11,13 @@ type Config struct {
 	JWT
 	AWS
 	Crobjob `mapstructure:"crobjob"`
+	Elastic `mapstructure:"elastic"`
+}
+
+type Elastic struct {
+	IndexName string `mapstructure:"index_name"`
+	Host      string `mapstructure:"host"`
+	Port      int    `mapstructure:"port"`
 }
 
 type Crobjob struct {
