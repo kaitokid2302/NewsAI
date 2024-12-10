@@ -9,11 +9,13 @@ import (
 	crobjob2 "github.com/kaitokid2302/NewsAI/internal/infrastructure/crobjob"
 	"github.com/kaitokid2302/NewsAI/internal/infrastructure/database"
 	"github.com/kaitokid2302/NewsAI/internal/infrastructure/elastic"
+	markdown2 "github.com/kaitokid2302/NewsAI/internal/infrastructure/markdown"
 	"github.com/kaitokid2302/NewsAI/internal/infrastructure/redis"
 	"github.com/kaitokid2302/NewsAI/internal/middleware"
 	"github.com/kaitokid2302/NewsAI/internal/repository"
 	authService "github.com/kaitokid2302/NewsAI/internal/service/auth"
 	crobjob3 "github.com/kaitokid2302/NewsAI/internal/service/crobjob"
+	elastic2 "github.com/kaitokid2302/NewsAI/internal/service/elastic"
 	"github.com/kaitokid2302/NewsAI/internal/service/jwt"
 	"github.com/kaitokid2302/NewsAI/internal/service/s3"
 	"github.com/kaitokid2302/NewsAI/internal/service/user"
@@ -50,7 +52,10 @@ func Run() {
 	userHandler.InitRoute(userGroup)
 
 	articleRepo := repository.NewArticleRepo(db)
-	crobjobservice := crobjob3.NewCronJobArticleService(articleRepo)
+	markdown := markdown2.NewMarkdown()
+	elasticClient := elastic.InitElasticSearch()
+	elasticService := elastic2.NewElasticService(elasticClient)
+	crobjobservice := crobjob3.NewCronJobArticleService(articleRepo, markdown, elasticService)
 	crobjob := crobjob2.NewCrobjob(*crobjobservice)
 	crobjob.Run()
 
