@@ -10,12 +10,12 @@ func (a *AuthHandler) Login(c *gin.Context) {
 	var input request.LoginRequest
 
 	if er := c.ShouldBind(&input); er != nil {
-		reponse2.ReponseOutput(c, reponse2.LoginFail, "", nil)
+		reponse2.ReponseOutput(c, reponse2.LoginFail, er.Error(), nil)
 		return
 	}
 	user, er := a.authService.Login(input.Email, input.Password)
 	if er != nil {
-		reponse2.ReponseOutput(c, reponse2.LoginFail, "", nil)
+		reponse2.ReponseOutput(c, reponse2.LoginFail, er.Error(), nil)
 		return
 	}
 	token := a.jwtService.CreateToken(user.Email)

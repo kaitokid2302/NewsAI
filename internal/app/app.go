@@ -57,7 +57,9 @@ func Run() {
 	elasticService := elastic2.NewElasticService(elasticClient)
 	crobjobservice := crobjob3.NewCronJobArticleService(articleRepo, markdown, elasticService)
 	crobjob := crobjob2.NewCrobjob(*crobjobservice)
-	crobjob.Run()
+	go func() {
+		crobjob.Run()
+	}()
 
 	err := r.Run(":8080")
 	if err != nil {

@@ -11,6 +11,7 @@ import (
 
 type UserService interface {
 	UpdateUser(c *gin.Context, name string, fileName string, file *multipart.File) (*database.User, error)
+	GetUserInfo(email string) (*database.User, error)
 }
 
 type UserServiceImpl struct {
@@ -23,6 +24,15 @@ func NewUserService(s3 s3.UploadFileS3Service, userRepository repository.UserRep
 		s3,
 		userRepository,
 	}
+}
+
+func (u *UserServiceImpl) GetUserInfo(email string) (*database.User, error) {
+	user, er := u.userRepository.GetUserByEmail(email)
+	if er != nil {
+		return nil, er
+	}
+	user.Password = ""
+	return user, er
 }
 
 func (u *UserServiceImpl) UpdateUser(c *gin.Context, name string, fileName string, file *multipart.File) (*database.User, error) {

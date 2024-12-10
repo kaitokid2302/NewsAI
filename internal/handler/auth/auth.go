@@ -25,14 +25,14 @@ func NewAuthHandler(authService authService.AuthService, jwtService jwt.JWTservi
 func (auth *AuthHandler) Register(c *gin.Context) {
 	var registerRequest request.RegisterRequest
 	if er := c.ShouldBind(&registerRequest); er != nil {
-		reponse2.ReponseOutput(c, reponse2.RegisterFail, "", nil)
+		reponse2.ReponseOutput(c, reponse2.RegisterFail, er.Error(), nil)
 		return
 	}
 	var user database.User
 	automapper.MapLoose(registerRequest, &user)
 	er := auth.authService.Register(&user)
 	if er != nil {
-		reponse2.ReponseOutput(c, reponse2.RegisterFail, "", nil)
+		reponse2.ReponseOutput(c, reponse2.RegisterFail, er.Error(), nil)
 		return
 	}
 	user.Password = ""
@@ -44,12 +44,12 @@ func (auth *AuthHandler) VerifyOTP(c *gin.Context) {
 	var input request.OTPVerificationRequest
 
 	if er := c.ShouldBind(&input); er != nil {
-		reponse2.ReponseOutput(c, reponse2.OTPVerifyFail, "", nil)
+		reponse2.ReponseOutput(c, reponse2.OTPVerifyFail, er.Error(), nil)
 		return
 	}
 	name, er := auth.authService.VerificationOTP(input.Email, input.OTP)
 	if er != nil {
-		reponse2.ReponseOutput(c, reponse2.OTPVerifyFail, "", nil)
+		reponse2.ReponseOutput(c, reponse2.OTPVerifyFail, er.Error(), nil)
 		return
 	}
 	reponse2.ReponseOutput(c, reponse2.OTPVerifySucess, "", database.User{Email: input.Email, Name: name})
@@ -64,7 +64,7 @@ func (auth *AuthHandler) ResendOTP(c *gin.Context) {
 
 	_, er := auth.authService.ResendOTP(input.Email)
 	if er != nil {
-		reponse2.ReponseOutput(c, reponse2.ResendOTPFail, "", nil)
+		reponse2.ReponseOutput(c, reponse2.ResendOTPFail, er.Error(), nil)
 		return
 	}
 	reponse2.ReponseOutput(c, reponse2.ResendOTPSucess, "", database.User{Email: input.Email})

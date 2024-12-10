@@ -47,3 +47,13 @@ func (uHandler *UserHandler) UpdateUser(c *gin.Context) {
 	u.Password = ""
 	reponse2.ReponseOutput(c, reponse2.UpdateUserSuccess, "", u)
 }
+
+func (uHandler *UserHandler) UserInfo(c *gin.Context) {
+	email := c.GetString("email")
+	user, er := uHandler.userService.GetUserInfo(email)
+	if er != nil {
+		reponse2.ReponseOutput(c, reponse2.GetUserFail, "", nil)
+		return
+	}
+	reponse2.ReponseOutput(c, reponse2.GetUserSuccess, "", user)
+}

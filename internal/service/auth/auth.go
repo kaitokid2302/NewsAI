@@ -58,6 +58,10 @@ func (s *AuthServiceImpl) Register(user *database.User) error {
 }
 
 func (s *AuthServiceImpl) VerificationOTP(email string, code int) (string, error) {
+	exist := s.userRepo.ExistUser(email)
+	if exist {
+		return "", errors.New("user already exist")
+	}
 	user, er := s.GetTempUser(email)
 	if er != nil || user.Email == "" {
 		return "", errors.New("user not found, register again")

@@ -30,7 +30,8 @@ func (s *AuthServiceImpl) SaveTempUser(user *database.User) error {
 }
 
 func (s *AuthServiceImpl) GetTempUser(email string) (*database.User, error) {
-	x := s.redisClient.Get(context.Background(), email+"temp").Val()
+	tempEmail := email + "temp"
+	x := s.redisClient.Get(context.Background(), tempEmail).Val()
 	var user database.User
 	er := json.Unmarshal([]byte(x), &user)
 	return &user, er
