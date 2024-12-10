@@ -54,3 +54,28 @@ func TestNewElasticService(t *testing.T) {
 	assert.Nil(t, er)
 	assert.Equal(t, 0, len(dataList))
 }
+
+func TestUpdateSummary(t *testing.T) {
+	config.InitAll()
+	client := elastic.InitElasticSearch()
+	elasticService := NewElasticService(client)
+	data := elastic.ElasticModel{
+		Text:      "trời ơi là trời",
+		Summary:   "tôi phải làm sao đây",
+		ArticleID: 100,
+	}
+	er := elasticService.InsertToIndex(&data)
+	assert.Nil(t, er)
+
+	newSummary := "Lãm đẹp trai qúa"
+	er = elasticService.AddSummaryToIndex(100, newSummary)
+	assert.Nil(t, er)
+
+	article, er := elasticService.FindDocument(100)
+	assert.Nil(t, er)
+	assert.Equal(t, newSummary, article.Summary)
+	assert.Equal(t, "trời ơi là trời", article.Text)
+	assert.Equal(t, uint(100), article.ArticleID)
+
+	er = elasticService.DeleteDocument(100)
+}
