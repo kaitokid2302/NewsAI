@@ -26,6 +26,9 @@ func NewElasticService(client *elasticsearch.Client) ElasticService {
 }
 
 func (s *elasticService) InsertToIndex(e *elastic.ElasticModel) error {
+	// convert e.text and summary to lowercase
+	e.Text = strings.ToLower(e.Text)
+	e.Summary = strings.ToLower(e.Summary)
 	dataByte, er := json.Marshal(e)
 	if er != nil {
 		return er
