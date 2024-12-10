@@ -12,17 +12,17 @@ func TestNewElasticService(t *testing.T) {
 	config.InitAll()
 	client := elastic.InitElasticSearch()
 	elasticService := NewElasticService(client)
-	data1 := elastic.Elastic{
+	data1 := elastic.ElasticModel{
 		Text:      "trời ơi là trời",
 		Summary:   "tôi phải làm sao đây",
 		ArticleID: 100,
 	}
-	data2 := elastic.Elastic{
+	data2 := elastic.ElasticModel{
 		Text:      "trời má là đất",
 		Summary:   "em gái yêu",
 		ArticleID: 101,
 	}
-	data3 := elastic.Elastic{
+	data3 := elastic.ElasticModel{
 		Text:      "con yêu mẹ",
 		Summary:   "nhất nhà",
 		ArticleID: 102,
@@ -34,7 +34,23 @@ func TestNewElasticService(t *testing.T) {
 	er = elasticService.InsertToIndex(&data3)
 	assert.Nil(t, er)
 
-	dataList, er := elasticService.SearchDocument("trời là")
+	dataList, er := elasticService.GetTextFromIndex("nhất ", 0, 3)
 	assert.Nil(t, er)
-	assert.Equal(t, 10, len(dataList))
+	assert.Equal(t, 1, len(dataList))
+	assert.Equal(t, uint(102), dataList[0])
+
+	er = elasticService.DeleteDocument(102)
+	assert.Nil(t, er)
+	er = elasticService.DeleteDocument(101)
+	assert.Nil(t, er)
+	er = elasticService.DeleteDocument(100)
+	assert.Nil(t, er)
+
+	dataList, er = elasticService.GetTextFromIndex("nhất ", 0, 3)
+	assert.Nil(t, er)
+	assert.Equal(t, 0, len(dataList))
+	// "trời"
+	dataList, er = elasticService.GetTextFromIndex("trời", 0, 3)
+	assert.Nil(t, er)
+	assert.Equal(t, 0, len(dataList))
 }

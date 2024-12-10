@@ -7,15 +7,16 @@ import (
 	"github.com/kaitokid2302/NewsAI/internal/config"
 )
 
-type Elastic struct {
+type ElasticModel struct {
 	Text      string `json:"text"`
 	Summary   string `json:"summary"`
 	ArticleID uint   `json:"articleID"`
 }
 
 func InitElasticSearch() *elasticsearch.Client {
+	adress := fmt.Sprintf("http://%s:%d", config.Global.Elastic.Host, config.Global.Elastic.Port)
 	client, er := elasticsearch.NewClient(elasticsearch.Config{
-		Addresses: []string{fmt.Sprintf("http://%s:%d", config.Global.Elastic.Host, config.Global.Elastic.Port)},
+		Addresses: []string{adress},
 	})
 	if er != nil {
 		panic(er)
@@ -24,7 +25,7 @@ func InitElasticSearch() *elasticsearch.Client {
 	if er != nil {
 		panic(er)
 	}
-	if exist.StatusCode == 200 {
+	if exist.StatusCode == 200 { /**/
 		return client
 	}
 	_, err := client.Indices.Create(config.Global.IndexName)
