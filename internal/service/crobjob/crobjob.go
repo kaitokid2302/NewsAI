@@ -4,17 +4,17 @@ import (
 	"github.com/kaitokid2302/NewsAI/internal/infrastructure/database"
 	elastic2 "github.com/kaitokid2302/NewsAI/internal/infrastructure/elastic"
 	"github.com/kaitokid2302/NewsAI/internal/infrastructure/markdown"
-	"github.com/kaitokid2302/NewsAI/internal/repository"
+	"github.com/kaitokid2302/NewsAI/internal/repository/article"
 	"github.com/kaitokid2302/NewsAI/internal/service/elastic"
 )
 
 type CronJobArticleService struct {
-	articleRepo    repository.ArticleRepo
+	articleRepo    article.ArticleRepo
 	markdown       markdown.Markdown
 	elasticService elastic.ElasticService
 }
 
-func NewCronJobArticleService(articleRepo repository.ArticleRepo, markdown markdown.Markdown, elasticService elastic.ElasticService) *CronJobArticleService {
+func NewCronJobArticleService(articleRepo article.ArticleRepo, markdown markdown.Markdown, elasticService elastic.ElasticService) *CronJobArticleService {
 	return &CronJobArticleService{
 		articleRepo:    articleRepo,
 		markdown:       markdown,

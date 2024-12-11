@@ -1,4 +1,4 @@
-package repository
+package article
 
 import (
 	"github.com/kaitokid2302/NewsAI/internal/infrastructure/database"

@@ -12,7 +12,8 @@ import (
 	markdown2 "github.com/kaitokid2302/NewsAI/internal/infrastructure/markdown"
 	"github.com/kaitokid2302/NewsAI/internal/infrastructure/redis"
 	"github.com/kaitokid2302/NewsAI/internal/middleware"
-	"github.com/kaitokid2302/NewsAI/internal/repository"
+	"github.com/kaitokid2302/NewsAI/internal/repository/article"
+	user3 "github.com/kaitokid2302/NewsAI/internal/repository/user"
 	authService "github.com/kaitokid2302/NewsAI/internal/service/auth"
 	crobjob3 "github.com/kaitokid2302/NewsAI/internal/service/crobjob"
 	elastic2 "github.com/kaitokid2302/NewsAI/internal/service/elastic"
@@ -37,7 +38,7 @@ func Run() {
 	redisClient := redis.InitRedis()
 	db := database.InitDatabase()
 	jwtService := jwt.NewJWTService()
-	userRepo := repository.NewUserRepo(db)
+	userRepo := user3.NewUserRepo(db)
 	authService := authService.NewAuthService(userRepo, redisClient)
 
 	authHandler := auth.NewAuthHandler(authService, jwtService)
@@ -51,7 +52,7 @@ func Run() {
 	userGroup.Use(middleware.NewAuth(jwt.NewJWTService()).JWTverify())
 	userHandler.InitRoute(userGroup)
 
-	articleRepo := repository.NewArticleRepo(db)
+	articleRepo := article.NewArticleRepo(db)
 	markdown := markdown2.NewMarkdown()
 	elasticClient := elastic.InitElasticSearch()
 	elasticService := elastic2.NewElasticService(elasticClient)

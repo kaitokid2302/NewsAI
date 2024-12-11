@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	"github.com/kaitokid2302/NewsAI/internal/infrastructure/database"
-	"github.com/kaitokid2302/NewsAI/internal/repository"
+	"github.com/kaitokid2302/NewsAI/internal/repository/user"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -19,11 +19,11 @@ type AuthService interface {
 }
 
 type AuthServiceImpl struct {
-	userRepo    repository.UserRepo
+	userRepo    user.UserRepo
 	redisClient *redis.Client
 }
 
-func NewAuthService(repo repository.UserRepo, redisClient *redis.Client) AuthService {
+func NewAuthService(repo user.UserRepo, redisClient *redis.Client) AuthService {
 	return &AuthServiceImpl{userRepo: repo, redisClient: redisClient}
 }
 

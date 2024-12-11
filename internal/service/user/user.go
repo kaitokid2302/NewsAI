@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/kaitokid2302/NewsAI/internal/infrastructure/database"
-	"github.com/kaitokid2302/NewsAI/internal/repository"
+	"github.com/kaitokid2302/NewsAI/internal/repository/user"
 	"github.com/kaitokid2302/NewsAI/internal/service/s3"
 )
 
@@ -16,10 +16,10 @@ type UserService interface {
 
 type UserServiceImpl struct {
 	s3             s3.UploadFileS3Service
-	userRepository repository.UserRepo
+	userRepository user.UserRepo
 }
 
-func NewUserService(s3 s3.UploadFileS3Service, userRepository repository.UserRepo) UserService {
+func NewUserService(s3 s3.UploadFileS3Service, userRepository user.UserRepo) UserService {
 	return &UserServiceImpl{
 		s3,
 		userRepository,
