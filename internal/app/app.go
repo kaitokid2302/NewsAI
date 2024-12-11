@@ -4,6 +4,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/kaitokid2302/NewsAI/internal/handler/auth"
+	topic3 "github.com/kaitokid2302/NewsAI/internal/handler/topic"
 	user2 "github.com/kaitokid2302/NewsAI/internal/handler/user"
 	"github.com/kaitokid2302/NewsAI/internal/infrastructure/aws"
 	crobjob2 "github.com/kaitokid2302/NewsAI/internal/infrastructure/crobjob"
@@ -13,12 +14,14 @@ import (
 	"github.com/kaitokid2302/NewsAI/internal/infrastructure/redis"
 	"github.com/kaitokid2302/NewsAI/internal/middleware"
 	"github.com/kaitokid2302/NewsAI/internal/repository/article"
+	topic2 "github.com/kaitokid2302/NewsAI/internal/repository/topic"
 	user3 "github.com/kaitokid2302/NewsAI/internal/repository/user"
 	authService "github.com/kaitokid2302/NewsAI/internal/service/auth"
 	crobjob3 "github.com/kaitokid2302/NewsAI/internal/service/crobjob"
 	elastic2 "github.com/kaitokid2302/NewsAI/internal/service/elastic"
 	"github.com/kaitokid2302/NewsAI/internal/service/jwt"
 	"github.com/kaitokid2302/NewsAI/internal/service/s3"
+	"github.com/kaitokid2302/NewsAI/internal/service/topic"
 	"github.com/kaitokid2302/NewsAI/internal/service/user"
 
 	swaggerfiles "github.com/swaggo/files"
@@ -58,9 +61,14 @@ func Run() {
 	elasticService := elastic2.NewElasticService(elasticClient)
 	crobjobservice := crobjob3.NewCronJobArticleService(articleRepo, markdown, elasticService)
 	crobjob := crobjob2.NewCrobjob(*crobjobservice)
-	go func() {
-		crobjob.Run()
-	}()
+	topicRepo := topic2.NewTopicRepository(db)
+	topicService := topic.NewTopicService(userService, topicRepo)
+	topicHandler := topic3.NewTopicHandler(topicService)
+	topicGroup := r.Group("/topic")
+	topicGroup.Use(middleware.NewAuth(jwt.NewJWTService()).JWTverify())
+	topicHandler.InitRoute(topicGroup)
+
+	go crobjob.Run()
 
 	err := r.Run(":8080")
 	if err != nil {
