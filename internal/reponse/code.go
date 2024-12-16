@@ -45,6 +45,10 @@ const (
 	// AllTopic
 	AllTopicSuccess = 901
 	AllTopicFail    = 902
+
+	// Article
+	GetArticleSuccess = 1001
+	GetArticleFail    = 1002
 )
 
 var msg = map[int]string{
@@ -70,4 +74,6 @@ var msg = map[int]string{
 	UnsubscribeTopicSuccess: "Unsubscribed topic successfully",
 	AllTopicSuccess:         "Get all topic successfully",
 	AllTopicFail:            "Can not get all topic",
+	GetArticleSuccess:       "Get article successfully",
+	GetArticleFail:          "Can not get article",
 }

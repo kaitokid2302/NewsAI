@@ -19,10 +19,13 @@ func NewCrobjob(crobjobService crobjob.CronJobArticleService) *Crobjob {
 }
 
 func (c *Crobjob) Run() {
-	for {
-		for _, topic := range database.Topics {
-			c.crobjobService.GetArticle(&topic)
+	go func() {
+		for {
+			for _, topic := range database.Topics {
+				c.crobjobService.GetArticle(&topic)
+			}
+			time.Sleep(time.Second * time.Duration(config.Global.Time))
 		}
-		time.Sleep(time.Second * time.Duration(config.Global.Time))
-	}
+	}()
+
 }

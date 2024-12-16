@@ -3,6 +3,7 @@ package app
 import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	article2 "github.com/kaitokid2302/NewsAI/internal/handler/article"
 	"github.com/kaitokid2302/NewsAI/internal/handler/auth"
 	topic3 "github.com/kaitokid2302/NewsAI/internal/handler/topic"
 	user2 "github.com/kaitokid2302/NewsAI/internal/handler/user"
@@ -16,6 +17,7 @@ import (
 	"github.com/kaitokid2302/NewsAI/internal/repository/article"
 	topic2 "github.com/kaitokid2302/NewsAI/internal/repository/topic"
 	user3 "github.com/kaitokid2302/NewsAI/internal/repository/user"
+	article3 "github.com/kaitokid2302/NewsAI/internal/service/article"
 	authService "github.com/kaitokid2302/NewsAI/internal/service/auth"
 	crobjob3 "github.com/kaitokid2302/NewsAI/internal/service/crobjob"
 	elastic2 "github.com/kaitokid2302/NewsAI/internal/service/elastic"
@@ -68,7 +70,12 @@ func Run() {
 	topicGroup.Use(middleware.NewAuth(jwt.NewJWTService()).JWTverify())
 	topicHandler.InitRoute(topicGroup)
 
-	go crobjob.Run()
+	articleGroup := r.Group("/article")
+	articleGroup.Use(middleware.NewAuth(jwt.NewJWTService()).JWTverify())
+	articleService := article3.NewArticleService(articleRepo, userRepo, topicRepo)
+	articleHandler := article2.NewArticleHandler(articleService)
+	articleHandler.InitRoute(articleGroup)
+	crobjob.Run()
 
 	err := r.Run(":8080")
 	if err != nil {

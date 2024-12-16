@@ -26,3 +26,11 @@ type UpdateUserRequest struct {
 	Name   string                `json:"name" form:"name"`
 	Avatar *multipart.FileHeader `json:"avatar" form:"avatar"`
 }
+
+type ArticleQueryRequest struct {
+	Offset   int  `json:"offset" form:"offset"`
+	Limit    int  `json:"limit" form:"limit"`
+	Viewed   bool `json:"viewed" form:"viewed"`
+	BookMark bool `json:"bookMark" form:"bookMark"`
+	Hidden   bool `json:"hidden" form:"hidden"`
+}
