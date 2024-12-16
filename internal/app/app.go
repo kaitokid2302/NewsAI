@@ -3,10 +3,12 @@ package app
 import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/kaitokid2302/NewsAI/internal/config"
 	article2 "github.com/kaitokid2302/NewsAI/internal/handler/article"
 	"github.com/kaitokid2302/NewsAI/internal/handler/auth"
 	topic3 "github.com/kaitokid2302/NewsAI/internal/handler/topic"
 	user2 "github.com/kaitokid2302/NewsAI/internal/handler/user"
+	"github.com/kaitokid2302/NewsAI/internal/infrastructure/ai"
 	"github.com/kaitokid2302/NewsAI/internal/infrastructure/aws"
 	crobjob2 "github.com/kaitokid2302/NewsAI/internal/infrastructure/crobjob"
 	"github.com/kaitokid2302/NewsAI/internal/infrastructure/database"
@@ -20,7 +22,6 @@ import (
 	article3 "github.com/kaitokid2302/NewsAI/internal/service/article"
 	authService "github.com/kaitokid2302/NewsAI/internal/service/auth"
 	crobjob3 "github.com/kaitokid2302/NewsAI/internal/service/crobjob"
-	elastic2 "github.com/kaitokid2302/NewsAI/internal/service/elastic"
 	"github.com/kaitokid2302/NewsAI/internal/service/jwt"
 	"github.com/kaitokid2302/NewsAI/internal/service/s3"
 	"github.com/kaitokid2302/NewsAI/internal/service/topic"
@@ -58,10 +59,10 @@ func Run() {
 	userHandler.InitRoute(userGroup)
 
 	articleRepo := article.NewArticleRepo(db)
-	markdown := markdown2.NewMarkdown()
+	markdownInfrast := markdown2.NewMarkdown()
 	elasticClient := elastic.InitElasticSearch()
-	elasticService := elastic2.NewElasticService(elasticClient)
-	crobjobservice := crobjob3.NewCronJobArticleService(articleRepo, markdown, elasticService)
+	elasticInfrast := elastic.NewElasticInfrast(elasticClient)
+	crobjobservice := crobjob3.NewCronJobArticleService(articleRepo, markdownInfrast, elasticInfrast)
 	crobjob := crobjob2.NewCrobjob(*crobjobservice)
 	topicRepo := topic2.NewTopicRepository(db)
 	topicService := topic.NewTopicService(userService, topicRepo)
@@ -72,7 +73,9 @@ func Run() {
 
 	articleGroup := r.Group("/article")
 	articleGroup.Use(middleware.NewAuth(jwt.NewJWTService()).JWTverify())
-	articleService := article3.NewArticleService(articleRepo, userRepo, topicRepo)
+
+	aiInfrast := ai.NewAIService(config.Global.Provider[0])
+	articleService := article3.NewArticleService(articleRepo, userRepo, topicRepo, redisClient, markdownInfrast, aiInfrast, elasticInfrast)
 	articleHandler := article2.NewArticleHandler(articleService)
 	articleHandler.InitRoute(articleGroup)
 	crobjob.Run()

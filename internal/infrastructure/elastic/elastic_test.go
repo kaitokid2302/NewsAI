@@ -4,25 +4,24 @@ import (
 	"testing"
 
 	"github.com/kaitokid2302/NewsAI/internal/config"
-	"github.com/kaitokid2302/NewsAI/internal/infrastructure/elastic"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewElasticService(t *testing.T) {
 	config.InitAll()
-	client := elastic.InitElasticSearch()
-	elasticService := NewElasticService(client)
-	data1 := elastic.ElasticModel{
+	client := InitElasticSearch()
+	elasticService := NewElasticInfrast(client)
+	data1 := ElasticModel{
 		Text:      "trời ơi là trời",
 		Summary:   "tôi phải làm sao đây",
 		ArticleID: 100,
 	}
-	data2 := elastic.ElasticModel{
+	data2 := ElasticModel{
 		Text:      "trời má là đất",
 		Summary:   "em gái yêu",
 		ArticleID: 101,
 	}
-	data3 := elastic.ElasticModel{
+	data3 := ElasticModel{
 		Text:      "con yêu mẹ",
 		Summary:   "nhất nhà",
 		ArticleID: 102,
@@ -57,9 +56,9 @@ func TestNewElasticService(t *testing.T) {
 
 func TestUpdateSummary(t *testing.T) {
 	config.InitAll()
-	client := elastic.InitElasticSearch()
-	elasticService := NewElasticService(client)
-	data := elastic.ElasticModel{
+	client := InitElasticSearch()
+	elasticService := NewElasticInfrast(client)
+	data := ElasticModel{
 		Text:      "trời ơi là trời",
 		Summary:   "tôi phải làm sao đây",
 		ArticleID: 100,
@@ -67,7 +66,7 @@ func TestUpdateSummary(t *testing.T) {
 	er := elasticService.InsertToIndex(&data)
 	assert.Nil(t, er)
 
-	newSummary := "Lãm đẹp trai qúa"
+	newSummary := "lãm đẹp trai qúa"
 	er = elasticService.AddSummaryToIndex(100, newSummary)
 	assert.Nil(t, er)
 

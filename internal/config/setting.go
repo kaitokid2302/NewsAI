@@ -13,6 +13,7 @@ type Config struct {
 	Crobjob `mapstructure:"crobjob"`
 	Elastic `mapstructure:"elastic"`
 	AI      `mapstructure:"ai"`
+	Prompt  string `mapstructure:"prompt"`
 }
 
 type AI struct {

@@ -151,3 +151,18 @@ func (h *ArticleHandler) UnMarkHidden(c *gin.Context) {
 	}
 	reponse.ReponseOutput(c, reponse.GetArticleSuccess, "", nil)
 }
+
+func (h *ArticleHandler) GetTextFromArticle(c *gin.Context) {
+	articleIDString := c.Param("articleID")
+	articleID, er := strconv.Atoi(articleIDString)
+	if er != nil {
+		reponse.ReponseOutput(c, reponse.GetArticleFail, er.Error(), nil)
+		return
+	}
+	text, er := h.articleService.GetTextFromArticle(articleID)
+	if er != nil {
+		reponse.ReponseOutput(c, reponse.GetArticleFail, er.Error(), nil)
+		return
+	}
+	reponse.ReponseOutput(c, reponse.GetArticleSuccess, "", text)
+}

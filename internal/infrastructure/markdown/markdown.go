@@ -8,18 +8,18 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-type Markdown interface {
+type MarkdownInfrast interface {
 	GetMarkDownFromLink(title, description, link string) (string, error)
 }
 
-func NewMarkdown() Markdown {
-	return &MarkDownImpl{}
+func NewMarkdown() MarkdownInfrast {
+	return &markdownInfrastImpl{}
 }
 
-type MarkDownImpl struct {
+type markdownInfrastImpl struct {
 }
 
-func (m *MarkDownImpl) GetMarkDownFromLink(title, description, link string) (string, error) {
+func (m *markdownInfrastImpl) GetMarkDownFromLink(title, description, link string) (string, error) {
 	url := link
 	resp, err := http.Get(url)
 	if err != nil {

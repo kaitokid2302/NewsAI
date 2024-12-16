@@ -6,14 +6,14 @@ import (
 
 	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/kaitokid2302/NewsAI/internal/config"
-	"github.com/kaitokid2302/NewsAI/internal/infrastructure/elastic"
 )
 
-type ElasticService interface {
-	InsertToIndex(e *elastic.ElasticModel) error
+type ElasticInfrast interface {
+	InsertTextToIndex(text string, articleID uint) error
+	InsertToIndex(e *ElasticModel) error
 	GetTextFromIndex(text string, from int, size int) ([]uint, error)
 	AddSummaryToIndex(articleID uint, summary string) error
-	FindDocument(articleID uint) (*elastic.ElasticModel, error)
+	FindDocument(articleID uint) (*ElasticModel, error)
 	DeleteDocument(articleID uint) error
 }
 
@@ -21,11 +21,21 @@ type elasticService struct {
 	client *elasticsearch.Client
 }
 
-func NewElasticService(client *elasticsearch.Client) ElasticService {
+func NewElasticInfrast(client *elasticsearch.Client) ElasticInfrast {
 	return &elasticService{client: client}
 }
 
-func (s *elasticService) InsertToIndex(e *elastic.ElasticModel) error {
+func (s *elasticService) InsertTextToIndex(text string, articleID uint) error {
+	// create new ElasticModel
+	e := ElasticModel{
+		Text:      text,
+		Summary:   "",
+		ArticleID: articleID,
+	}
+	return s.InsertToIndex(&e)
+}
+
+func (s *elasticService) InsertToIndex(e *ElasticModel) error {
 	// convert e.text and summary to lowercase
 	e.Text = strings.ToLower(e.Text)
 	e.Summary = strings.ToLower(e.Summary)
@@ -34,6 +44,12 @@ func (s *elasticService) InsertToIndex(e *elastic.ElasticModel) error {
 		return er
 	}
 	dataString := string(dataByte)
+
+	// delete the document if it exists
+	er = s.DeleteDocument(e.ArticleID)
+	if er != nil {
+		return er
+	}
 	_, err := s.client.Index(
 		config.Global.IndexName,
 		strings.NewReader(dataString),
@@ -69,7 +85,7 @@ func (s *elasticService) DeleteDocument(articleID uint) error {
 	return nil
 }
 
-func (s *elasticService) FindDocument(articleID uint) (*elastic.ElasticModel, error) {
+func (s *elasticService) FindDocument(articleID uint) (*ElasticModel, error) {
 	query := map[string]interface{}{
 		"query": map[string]interface{}{
 			"match": map[string]interface{}{
@@ -100,7 +116,7 @@ func (s *elasticService) FindDocument(articleID uint) (*elastic.ElasticModel, er
 	}
 	hit := r["hits"].(map[string]interface{})["hits"].([]interface{})[0]
 	source := hit.(map[string]interface{})["_source"].(map[string]interface{})
-	var article *elastic.ElasticModel
+	var article *ElasticModel
 	sourceByte, er := json.Marshal(source)
 	if er != nil {
 		return nil, er

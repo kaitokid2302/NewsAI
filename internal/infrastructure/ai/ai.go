@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/kaitokid2302/NewsAI/internal/config"
@@ -11,25 +12,25 @@ import (
 
 // summary text
 
-type AIservice interface {
+type AIInfrast interface {
 	Summarize(text string) (string, error)
 }
 
-type aiServiceImpl struct {
+type aiInfrast struct {
 	provider config.Provider
 }
 
-func NewAIService(provider config.Provider) AIservice {
-	return &aiServiceImpl{provider: provider}
+func NewAIService(provider config.Provider) AIInfrast {
+	return &aiInfrast{provider: provider}
 }
 
-func (g *aiServiceImpl) Summarize(text string) (string, error) {
+func (g *aiInfrast) Summarize(text string) (string, error) {
 	bodyMap := map[string]interface{}{
 		"model": g.provider.Name,
 		"messages": []map[string]interface{}{ // messages là một mảng
 			{
 				"role":    "user",
-				"content": text,
+				"content": fmt.Sprintf(config.Global.Prompt, text),
 			},
 		},
 	}

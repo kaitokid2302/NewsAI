@@ -11,4 +11,8 @@ func (h *ArticleHandler) InitRoute(r *gin.RouterGroup) {
 	r.DELETE("/article/viewed/:articleID", h.UnMarkViewed)
 	r.DELETE("/article/bookmark/:articleID", h.UnMarkBookMark)
 	r.DELETE("/article/hidden/:articleID", h.UnMarkHidden)
+
+	// get text markdown from article
+
+	r.GET("/article/text/:articleID", h.GetTextFromArticle)
 }
